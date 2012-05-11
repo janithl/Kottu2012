@@ -48,7 +48,7 @@
 		
 		<p><br><br></p>
 
-		<a href="#mainpage" data-mini="true" data-inline="true" 
+		<a data-rel="back" href="./#mainpage" data-mini="true" data-inline="true" 
 		data-direction="reverse" data-icon="arrow-l" data-role="button">Go back</a>		
 		<button type="submit" data-mini="true" data-inline="true" data-theme="b"
 		data-icon="check">Submit</button>
@@ -93,7 +93,7 @@
 	<p>To join just send a mail to <a href="mailto:indi@indi.ca">indi@indi.ca</a>. 
 	I’ll get around to a contact form someday.</p>
 	
-	<a href="#settings" data-mini="true" data-inline="true" 
+	<a href="./#settings" data-mini="true" data-inline="true" 
 		data-direction="reverse" data-icon="arrow-l" data-role="button">Go back</a>
 	</div><!-- /content -->
 

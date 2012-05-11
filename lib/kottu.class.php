@@ -176,7 +176,7 @@ class Kottu
 			$timestamp = 'yesterday';
 		}
 		else {
-			$timestamp = 'on ' . date('j F Y', $timestamp);
+			$timestamp = date('j F Y', $timestamp);
 		}
 		
 		return $timestamp;

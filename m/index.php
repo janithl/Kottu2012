@@ -15,11 +15,11 @@ require('../lib/kottu.class.php');
 
 */
 
+$k = new Kottu();
+$out = new Template();
+
 if(isset($_GET['search'])) {
 
-	$k = new Kottu();
-	
-	$out = new Template();
 	$out->title =  "Search";
 	$out->posts = array();
 	if(isset($_GET['q']) && strlen($_GET['q']) > 0) {
@@ -34,10 +34,6 @@ if(isset($_GET['search'])) {
 }
 elseif(isset($_GET['post'])) {
 
-	$k = new Kottu();
-	
-	$out = new Template();
-	
 	$out->post = $k->fetchpostbyid($_GET['post']);
 	$out->title = count($out->post) ? $out->post['title'] : "Post Not Found" ;
 	
@@ -48,10 +44,6 @@ elseif(isset($_GET['post'])) {
 }
 elseif(isset($_GET['blogroll'])) {
 
-	$k = new Kottu();
-	
-	$out = new Template();
-	
 	$out->blogs = $k->fetchallblogs();
 	$out->title = "Blogroll";
 	
@@ -61,12 +53,9 @@ elseif(isset($_GET['blogroll'])) {
 }
 else {
 
-	$k = new Kottu();
-	
 	$lang = isset($_GET['lang']) ? $_GET['lang'] : 'all';
 	$time = isset($_GET['hot']) ? $_GET['hot'] : 'off';
-	
-	$out = new Template();
+
 	$out->title =  titlemaker($lang, $time);
 	$out->posts = $k->fetchallposts($lang, $time);
 	
