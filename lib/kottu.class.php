@@ -159,6 +159,34 @@ class Kottu
 	}
 	
 	/*
+		fetches 20 most popular blogs. 2592000 is *in the last month*, btw.			
+	*/
+	public function fetchpopblogs() {
+	
+		$blogs = array();
+		
+		$resultset = $this->dbh->query("SELECT blogName, blogURL, "
+			."AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, posts AS p "
+			."WHERE b.bid = p.blogID AND p.serverTimestamp > :month GROUP BY "
+			."b.bid HAVING COUNT(p.postBuzz) >= 3 ORDER BY AVG(postBuzz) DESC "
+			."LIMIT 20", array(':month'=>($this->now - 2592000)));
+		
+		if($resultset) {
+			while (($row = $resultset->fetch()) != false) {
+			
+				$b['name']	= $row[0];
+				$b['link']	= $row[1];
+				$b['buzz']	= $this->chilies($row[2]);
+				$b['lupdt']	= $this->humants($row[3]);
+
+				$blogs[] = $b;
+			}
+		}
+		
+		return $blogs;
+	}
+	
+	/*
 		returns human readable timestamp 
 	*/
 	public function humants($timestamp) {

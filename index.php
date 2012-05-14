@@ -27,6 +27,19 @@ if($path[$i] == 'register') {
 
 	echo '<a href="' . $_POST['redir'] . '">back</a>';
 }
+elseif($path[$i] == 'blogroll') {
+
+	/* Blogroll */
+	
+	$out->blogs 	= $k->fetchallblogs();
+	$out->popblogs	= $k->fetchpopblogs();
+
+	$out->render('web/blogroll.php');
+}
+elseif($path[$i] == 'about') {
+
+	$out->render('web/about.php');
+}
 elseif($path[$i] == 'feed') {
 	
 	/* RSS feeds */

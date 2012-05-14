@@ -13,7 +13,7 @@
 			<p><img src="<?php echo config('basepath') . "/img/icons/" . $i['buzz']; ?>"/></p>
 			</a>
 		</li>
-		<?php endforeach ?>
+		<?php endforeach; ?>
 		<li><a href="<?php echo $this->next; ?>"><h3>View older posts</h3></a></li>
 	<?php else: ?>
 		<li><h3>No items to display</h3></li>

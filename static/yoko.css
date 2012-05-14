@@ -14,6 +14,9 @@ License URI: http://www.gnu.org/licenses/gpl.html
 -----------------------------------------------------
 Modified for use on Kottu.org by Janith:
 0.1		10/10/2011
+
+Removed border-top: 1px solid #ddd; from #wrap
+0.2		10/12/2011
 	
 */
 
@@ -73,32 +76,32 @@ table {
 --------------------------------------------- */
 body {
 	background-color:#ececec;
-	font-family:'Droid Sans', arial, sans-serif;
-	color: #777;
+	font-family:'Droid Sans', arial, Malithi Web, Latha, sans-serif;
+	color: #333;
 }
 #page {
-	max-width: 1000px;
+	max-width: 960px;
 	margin: 12px auto;
 	padding:0 30px 30px;
 	background-color:#fff;
 	z-index: 0;
+	border: 1px #CCC solid;
 }
 #wrap {
 	margin:4px 0 0;
-	padding:40px 0;
+	padding:10px 0;
 	overflow: hidden;
-	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 }
 #content {
-	width: 70%;
+	width: 65%;
 	float: left;
 	overflow: hidden;
 }
 #tertiary {
 	width: 250px;
 	float: right;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 #colophon {
 	width: 100%;
@@ -123,37 +126,51 @@ body {
 --------------------------------------------- */
 #content h1 {
 	margin:26px 0 12px;
-	font: bold 1.4em/1.4 'Droid Sans', arial, sans-serif;
+	font: bold 1.4em/1.4 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content h2 {
 	margin:26px 0 12px;
-	font: bold 1.3em/1.4 'Droid Sans', arial, sans-serif;
+	font: bold 1.3em/1.4 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content h3 {
 	margin: 26px 0 12px;
-	font: bold 1.2em/ 1.4 'Droid Sans', arial, sans-serif;
+	font: bold 1.2em/ 1.4 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content h4 {
 	margin: 22px 0 12px;
-	font: bold 1.1em/1.4 'Droid Sans', arial, sans-serif;
+	font: bold 1.1em/1.4 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content h5 {
 	margin: 22px 0 10px;
-	font: bold 1em/1.3 'Droid Sans', arial, sans-serif;
+	font: bold 1em/1.3 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content h6 {
 	margin: 20px 0 10px;
-	font: bold .9em/1.3 'Droid Sans', arial, sans-serif;
+	font: bold .9em/1.3 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 /* Links
 --------------------------------------------- */
 a {
-	color: #009BC2;
+	color: #333;
 	text-decoration: none;
 } 
+
+a.right{
+float: right;
+}
+
+a.left{
+float:left;
+}
+
 a:hover {
-	color: #777!important;
+	color: #B00000!important;
 	text-decoration: underline;
+}
+
+a.red {
+	color: #B00000;
+	text-decoration: none;
 }
 
 /* Header
@@ -189,6 +206,41 @@ header#branding img.attachment-headerimage.wp-post-image {
 }
 hgroup#site-title img {
 	max-width: 100%;
+	padding:10px;
+}
+.questionmark {
+	background: url(images/q_normal.png) no-repeat;
+	display:inline-block;
+	width:14px;
+	height:14px;
+}
+.questionmark:hover {
+	background: url(images/q_over.png) no-repeat;
+}
+.hovertext {
+	width: 210px;
+	position: absolute;
+	top: 16px;
+	right: -120px;
+	border: 1px #eee solid;
+	background-color: #fff;
+	padding: 6px 6px 30px;
+	display: none;
+	-moz-box-shadow: 5px 5px 5px #eee;
+	-webkit-box-shadow: 5px 5px 5px #eee;
+	box-shadow: 5px 5px 5px #eee;
+	z-index: 100;
+	text-align: center;
+	font-size: 13px;
+}
+.hovertext a {
+	color: #B00000;
+	font-weight: bold;
+}
+.hovertext #close {
+	position: absolute;
+	right: 3px;
+	bottom: 3px;
 }
 
 /* Navigations
@@ -219,7 +271,7 @@ hgroup#site-title img {
 	text-decoration: none;
 }
 #branding #mainnav .selected a {
-	background:#AADDFF;
+	background:#C00;
 	color: #FFF;
 	text-decoration: none;
 }
@@ -252,6 +304,7 @@ hgroup#site-title img {
 #branding #mainnav ul li:hover > ul {
 	display: block;
 }
+
 /* Posts
 --------------------------------------------- */
 #content .post {
@@ -265,10 +318,10 @@ hgroup#site-title img {
 }
 #content .entry-header h2.entry-title {
 	margin: 0 0 12px;
-	font: bold 1.3em/1.4 'Droid Sans', arial, sans-serif;
+	font: bold 1.3em/1.4 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 }
 #content .entry-header h2.entry-title a:hover {
-	color: #777;
+	color: #B00000;
 	text-decoration: none;
 }
 #content .post p {
@@ -327,7 +380,7 @@ hgroup#site-title img {
 }
 #content .entry-details p span.entry-date, #content .entry-details p a {
 	width: 100%;
-	font-family: 'Droid Sans', arial, sans-serif;
+	font-family: 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 	font-style: normal;
 }
 #content .entry-content {
@@ -347,7 +400,7 @@ hgroup#site-title img {
 }
 #content .entry-meta a {
 	padding: 15px 0 0;
-	font-family: 'Droid Sans', arial, sans-serif;
+	font-family: 'Droid Sans', arial, Malithi Web, Latha, sans-serif;
 	font-style: normal;
 }
 .page-link {
@@ -393,6 +446,7 @@ hgroup#site-title img {
 /* Sidebars
 --------------------------------------------- */
 aside.widget {
+	float: left;
 	margin: 0 0 20px 0;
 	padding:  0 0 10px 0;
 	font-size: .8em;
@@ -410,21 +464,7 @@ aside.widget ul li:last-child {
 	font-weight: bold;
 	text-transform: uppercase;
 }
-#encourage {
-	width: 250px;
-	height: 160px;
-	font-size:12px;
-	line-height: 1.3;
-}
-#encourage a {
-	color: #F60;
-}
-#encourage small {
-	color: #999;
-}
-.textwidget {
-	line-height: 1.6;
-}
+
 /* --- Standard Widgets --- */
 .widget_categories ul li ul.children, .widget_nav_menu ul li ul.sub-menu, .widget_pages ul li ul.children {
 	margin: 5px 0 0 0;
@@ -453,6 +493,7 @@ aside.widget ul li:last-child {
 /* --- Search Widget --- */
 .widget_search {
 	overflow: hidden;
+	width: 100%;
 }
 .searchform {
 	width: 100%;
@@ -495,7 +536,41 @@ aside.widget ul li:last-child {
 }
 .searchsubmit:hover {
 	color: #fff;
-	background-color: #009BC2;
+	background-color: #009BC2!important;
+}
+/* --- eVillage scroller --- */
+#fresh a {
+	padding: 6px 10px;
+}
+#fresh li:hover a {
+	background-color: #F0F0F0;
+	text-decoration: none;
+}
+#fresh #currentsel a {
+	background-color: #C00;
+	color: #FFF;
+}
+#fresh ul {
+	margin-top: 6px;
+}
+#fresh li {
+	float: left;
+	display: block;
+}
+#encourage {
+	width: 250px;
+	height: 220px;
+	font-size:12px;
+	line-height: 1.3;
+}
+#encourage a {
+	color: #F60;
+}
+#encourage small {
+	color: #999;
+}
+.textwidget {
+	line-height: 1.6;
 }
 
 /* --- Flickr Fotostream Widget --- */
@@ -503,23 +578,22 @@ aside.widget ul li:last-child {
 	margin:3px 0 0;
 }
 .flickr_badge_image {
-	max-width:80px;
-	height:60px;
 	margin:0 3px 3px 0;
 	float:left;
 	overflow: hidden;
 }
 .flickr_badge_image img {
-	width:80px;
+	max-width:240px;
 }
 
 /* --- Tag Cloud ---*/
 .tagcloud {
-	text-align: justify;
+	text-align: center;
 }
 
 .tag {
 	line-height: 1.2;
+	padding: 0 2px;
 }
 .tagsize1 {
 	font-size: 120%;
@@ -568,7 +642,7 @@ a.top:hover {
 /* Media queries for responsive design
 --------------------------------------------- */
 /* --- iPad Landscape --- */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 960px) {
 /* --- General --- */
 #page {
 	margin: 0 auto;
@@ -587,7 +661,7 @@ a.top:hover {
 	overflow: hidden;
 }
 #content {
-	width:70%;
+	width:92.2%;
 	float: left;
 }
 #secondary {
@@ -891,40 +965,4 @@ form#commentform input#author, form#commentform input#email, form#commentform in
 a#cancel-comment-reply-link {
 	width: 100%;
 	margin:5px 0 15px;
-	display: block;
-}
-/* --- Post Nav Below --- */
-#content #nav-below .nav-previous a {
-	width: 100%;
-	display: block;
-	float: none;
-	margin: 0 0 10px;
-}
-#content #nav-below .nav-next a {
-	width: 100%;
-	display: block;
-	text-align: right;
-}
-#content #nav-below .nav-previous a:hover, #content #nav-below .nav-next a:hover {
-	text-decoration: none;
-}
-/* --- Post Formats ---- */
-#content .entry-post-format .entry-content-gallery {
-	width: 100%;
-	float: none;
-}
-#content .entry-post-format .gallery-thumb {
-	width: 100%;
-	float: none;
-	margin: 5px 15px 15px 0;
-}
-/* --- Pages ---- */
-#content .page .wpcf7 input.textfield {
-	width: 95%;
-}
-/* --- Footer ---- */
-#colophon {
-	width: 100%;
-	float: none;
-}
-}
+	display: 
