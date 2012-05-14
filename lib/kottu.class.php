@@ -22,19 +22,20 @@ class Kottu
 	/*
 		returns all the posts that fit the criteria given
 	*/
-	public function fetchallposts($lang, $time) {
+	public function fetchallposts($lang='all', $time='off', $pageno=0) {
 	
 		$lang = ($lang === 'all') ? '%' : $lang;
+		$page = ((int) $pageno) * 20;
 		
 		$posts = array();
 		
 		if($time === 'off') {
 			
-			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail FROM " 
-				."posts AS p, blogs AS b WHERE b.bid = p.blogID AND p.language "
-				."LIKE :lang ORDER BY serverTimestamp DESC LIMIT 20 ",
-						array(':lang'=>$lang));
+			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+				."p.postContent FROM posts AS p, blogs AS b WHERE "
+				."b.bid = p.blogID AND p.language LIKE :lang ORDER BY "
+				."p.serverTimestamp DESC LIMIT $page, 20 ", array(':lang'=>$lang));
 		}
 		else {
 		
@@ -44,11 +45,12 @@ class Kottu
 			elseif($time == 'week')	{ $day = $this->now - (7 * 24 * 60 * 60); }
 			elseif($time == 'month'){ $day = $this->now - (30 * 24 * 60 * 60); }
 
-			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail FROM " 
-				."posts AS p, blogs AS b WHERE b.bid = p.blogID AND p.language "
-				."LIKE :lang AND serverTimestamp > :time ORDER BY postBuzz DESC "
-				."LIMIT 20", array(':lang'=>$lang, ':time'=>$day));
+			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+				."p.postContent FROM posts AS p, blogs AS b WHERE "
+				."b.bid = p.blogID AND p.language LIKE :lang AND "
+				."serverTimestamp > :time ORDER BY postBuzz DESC "
+				."LIMIT $page, 20", array(':lang'=>$lang, ':time'=>$day));
 
 		}
 
@@ -58,10 +60,13 @@ class Kottu
 			
 				$p['id']	= $row[0];
 				$p['title'] = strip_tags($row[1]);
-				$p['ts']	= $this->humants($row[2]);
-				$p['buzz']	= $this->chilies($row[3]);
-				$p['blog']	= $row[4];
-				$p['img']	= strlen($row[5]) > 0 ? $row[5] : '../images/none.png';
+				$p['link']	= $row[2];
+				$p['ts']	= $this->humants($row[3]);
+				$p['longt'] = date('D, d M Y H:i:s O', $row[3]);
+				$p['buzz']	= $this->chilies($row[4]);
+				$p['blog']	= $row[5];
+				$p['img']	= strlen($row[6]) > 1 ? $row[6] : '../images/none.png';
+				$p['cont']	= $row[7];
 				
 				$posts[] 	= $p;
 			}
@@ -100,16 +105,17 @@ class Kottu
 	/*
 		basic search functionality
 	*/
-	public function search($str) {
+	public function search($str, $pageno) {
 	
 		$posts = array();
 		$str = "%$str%";
+		$page = ((int) $pageno) * 20;
 		
 		$resultset = $this->dbh->query("SELECT p.postID, p.title, "
 				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail FROM " 
 				."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
 				."(p.postContent LIKE :string OR p.title LIKE :string) ORDER BY "
-				."serverTimestamp DESC LIMIT 20 ", array(':string'=>$str));
+				."serverTimestamp DESC LIMIT $page, 20", array(':string'=>$str));
 		
 		if($resultset) {
 		
@@ -190,11 +196,11 @@ class Kottu
 		$buzz = (int)($buzz * 100);
 		$out = '';
 
-		if($buzz <= 1)		{ $out = '../images/chili1.png'; }
-		elseif($buzz <= 15)	{ $out = '../images/chili2.png'; }
-		elseif($buzz <= 35)	{ $out = '../images/chili3.png'; }
-		elseif($buzz <= 55)	{ $out = '../images/chili4.png'; }
-		else			{ $out = '../images/chili5.png'; }
+		if($buzz <= 1)		{ $out = 'chili1.png'; }
+		elseif($buzz <= 15)	{ $out = 'chili2.png'; }
+		elseif($buzz <= 35)	{ $out = 'chili3.png'; }
+		elseif($buzz <= 55)	{ $out = 'chili4.png'; }
+		else				{ $out = 'chili5.png'; }
 	
 		return $out;
 	}

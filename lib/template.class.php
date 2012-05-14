@@ -15,7 +15,7 @@ class Template {
 
 	public function render($tempfile) {
 
-		include_once('../templates/' . $tempfile);
+		include_once('./templates/' . $tempfile);
 	}
 
 	/*
