@@ -23,22 +23,51 @@ $out	= new Template();
 $path	= explode('/', $_SERVER['REQUEST_URI']);
 $i		= config('argstart');
 
-if($path[$i] == 'register') {
+if($path[$i] == 'go') {
 
-	echo '<a href="' . $_POST['redir'] . '">back</a>';
+	/* The artist formerly known as go.php */
+
+	if(isset($_GET['url'])) {
+	
+		$k->insertclick($_SERVER['REMOTE_ADDR'], $_GET['id']);
+		header("location: " . $_GET['url']);
+	}
+	else {
+		
+		header("location: " . config('basepath'));
+	}
 }
 elseif($path[$i] == 'blogroll') {
 
 	/* Blogroll */
 	
+	$out->title		= 'Kottu: Blogroll';
 	$out->blogs 	= $k->fetchallblogs();
 	$out->popblogs	= $k->fetchpopblogs();
+	$out->numblogs	= $k->fetchnumblogs();
+	
+	/* To make sure links all work */
+	
+	$out->lang = 'all';
+	$out->time = 'off';
+	$out->page = 0;
 
+	$out->render('web/head.php');
 	$out->render('web/blogroll.php');
+	$out->render('web/tail.php');
 }
 elseif($path[$i] == 'about') {
+	
+	$out->title		= 'Kottu: About Us';
+	$out->numblogs	= $k->fetchnumblogs();
+	
+	$out->lang = 'all';
+	$out->time = 'off';
+	$out->page = 0;
 
+	$out->render('web/head.php');
 	$out->render('web/about.php');
+	$out->render('web/tail.php');
 }
 elseif($path[$i] == 'feed') {
 	
@@ -109,6 +138,48 @@ elseif($path[$i] == 'm') {
 		$out->render('mobile/items.php');
 		$out->render('mobile/tail.php');
 	}
+}
+elseif($path[$i] == 'search') {
+
+	/* Web Search */
+	
+	$out->title =  "Kottu: Search";
+	$out->posts = array();
+	$out->str	= '';
+	
+	if(isset($_GET['q']) && strlen($_GET['q']) > 0) {
+		$out->posts = $k->search($_GET['q'], $out->page);
+		$out->str	= urldecode($_GET['q']);
+	}
+	
+	/* To make sure links all work */
+	
+	$out->lang	= 'all';
+	$out->time	= 'off';
+	$out->page	= isset($_GET['page']) ? $_GET['page'] : 0;
+
+	$out->render('web/head.php');
+	$out->render('web/items.php');
+	$out->render('web/tail.php');
+}
+else {
+
+	/* Normal Kottu website */
+
+	$out->lang = isset($path[$i]) && strlen($path[$i]) ? $path[$i] : 'all';
+	$out->time = isset($path[$i + 1]) && strlen($path[$i + 1]) ? $path[$i + 1] : 'off';
+	$out->page = isset($path[$i + 2]) && strlen($path[$i + 2]) ? $path[$i + 2] : 0;
+
+	$out->title =  'Kottu: ' . titlemaker($out->lang, $out->time, $out->page + 1);
+	$out->numblogs	= $k->fetchnumblogs();
+	$out->posts		= $k->fetchallposts($out->lang, $out->time, $out->page);
+	$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
+	$out->evillage	= $k->sidescroller();
+
+	$out->render('web/head.php');
+	$out->render('web/items.php');
+	$out->render('web/sidebar.php');
+	$out->render('web/tail.php');
 }
 
 function titlemaker($lang='all', $time='off', $page=1) {

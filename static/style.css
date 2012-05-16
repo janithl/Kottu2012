@@ -1,0 +1,332 @@
+/*
+YUI 3.4.1 (build 4118)
+Copyright 2011 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+
+CSS reset
+*/
+html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal}ol,ul{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:text-top}sub{vertical-align:text-bottom}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit}input,textarea,select{*font-size:100%}legend{color:#000}
+
+/*
+Based on:
+
+Theme Name: BlueBubble 3.1
+Theme URI: http://bluebubble.dosmundoscafe.com/
+Alternate Theme URI: http://www.thomasveit.com/bluebubble-free-premium-wordpress-portfolio-theme/
+Description: Minimal &amp; Elegant Portfolio Theme - Wordpress 3.0 ready
+Version: 3.1 
+Author: Thomas Veit (WP 3.0 updates by Mike Walsh)
+Author URI: http://bluebubble.dosmundoscafe.com/free-theme-bluebubble-v3-0/
+Updates Author URI: http://arte.dosmundoscafe.com
+
+The CSS, XHTML and design is released under GPL:
+http://www.opensource.org/licenses/gpl-3.0.html
+*/
+
+
+body {
+	background: #DDD url('../img/bgstatic.png') repeat;
+	font-family: "Droid Sans", Tahoma, Arial, sans-serif;
+	font-size: 10pt;
+	line-height: 1.6;
+	color: #333;
+}
+
+h1 {font-size: 20pt; padding: 10px 0; font-weight: bold; }
+h2 {font-size: 16pt; padding: 6px 0; font-weight: bold; line-height: 1.4; }
+h3 {font-size: 12pt; padding: 8px 0; font-weight: bold; }
+h4 {font-size: 10pt;}
+
+
+blockquote{
+	border-left:4px solid #ddd;
+	margin-left:15px;
+	padding:0 12px 0 12px;
+}
+
+code{
+	font-family:"Courier New", Courier, monospace;
+}
+
+strong {
+	font-weight: 700;
+}
+
+em {
+	font-style:italic;	
+}
+
+a {
+	color:#333;
+	text-decoration:none;
+	outline: none;
+}
+
+a:hover {
+	color: #FF003C;
+}
+
+.clear {
+	clear: both;
+}
+	
+/* header */
+
+header {
+	margin: 0 0 20px;
+	padding: 6px 40px;
+	max-height: 40px;
+	background: #333333;
+	color: #FFF;
+	z-index: 9000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+header a {
+	color: #FF003C;
+}
+
+header img {
+	margin: -8px 4px;
+	display: inline;
+	float: left;
+}
+
+.mainmenu {
+	margin: 0 auto;
+	width: 1000px;
+}
+	
+.mainmenu ul li {height: 100%;
+	display: inline-block;
+}
+
+.langs {
+	float: right;
+	margin-right: 10px;
+}
+
+.tagline {
+	display: inline-block;
+	padding: 8px 0;
+}
+
+.mainmenu .menuitem {
+	display: inline-block;
+	padding: 8px 12px;
+}
+
+.mainmenu .selected {
+	color: #FFF;
+	background: #FF003C;
+}
+
+.mainmenu .menuitem:hover, .mainmenu .selected:hover {
+	color: #333;
+	background: #FFF;
+}
+
+/* content */
+
+.page {
+	margin: 0 auto;
+	padding: 50px 0 0;
+	display: block;
+    width: 930px;
+}
+
+.content {
+	width: 640px;
+	display: inline-block;
+}
+
+.sidebar {
+	background: #FFFFFF;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+    float: right;
+    margin: 30px 0;
+    width: 256px;
+}
+
+/* footer */
+
+footer {
+	margin: 20px 0;
+	font-weight: bold;
+}
+
+.footermenu {
+	margin: 0 auto;
+	text-align: center;
+	width: 700px;
+}
+
+.footermenu li {
+	display: inline;
+	padding: 0 5px;
+}
+
+/* time menu */
+
+.timemenu {
+	margin: 0 auto;
+	padding: 6px 10px;
+}
+
+.timemenu ul li {
+	display: inline;
+	margin: 0;
+}
+
+.timemenu .first {
+	margin-right: 12px;
+}
+
+.timemenu a {
+	padding: 8px;
+	margin: 0 -2px;
+}
+
+.timemenu .selected a {
+	background: #FF003C;
+	color: #FFF;
+}
+
+.timemenu a:hover, .timemenu .selected a:hover {
+	background: #333;
+	color: #FFF;
+}
+
+/* search form */
+
+.searchform {
+	padding: 14px 30px;
+}
+
+.searchbox {
+	border: 1px #EEE solid;
+	padding: 3px;
+	width: 300px;
+	margin: 0 5px;
+}
+
+.sidebar .searchform {
+	padding: 10px 0;
+}
+
+.sidebar .searchbox {
+	width: 146px;
+}
+
+.searchsubmit {
+	border: 0;
+	padding: 3px 10px;
+	background: #333;
+	color: #FFF;
+	cursor: pointer;
+}
+
+.searchsubmit:hover {
+	background: #FF003C;
+}
+
+/* posts */
+
+article {
+	background: #FFFFFF;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	margin: 30px 0;
+	display: block;
+}
+
+.postheader {
+	padding: 5px 10px;
+}
+
+.postcont {
+	min-height: 100px;
+	padding: 10px;
+}
+
+.thumbnail {
+	float:left;
+	padding-right: 20px;
+}
+
+.postfooter {
+	background: #EFEFEF;
+	padding: 10px;
+	border-radius: 0 0 8px 8px;
+}
+
+.postfooter ul li {
+	display: inline;
+}
+
+.chili {
+	float: right;
+	padding: 8px 12px;
+}
+
+.timestamp {
+	color: #999999;
+	padding: 8px;
+	margin-right: 20px;
+}
+
+.share {
+	border-radius: 6px;
+	color: #FFFFFF;
+	display: inline-block;
+	padding: 6px 12px 6px 28px;
+	max-width: 64px;
+	margin-right: 10px;
+}
+
+.share:hover {
+	color: #FFFFFF;
+	opacity: 0.9;
+}
+
+.tw {
+	background: #3DC7F4 url('../img/icons/tw.png') no-repeat;
+}
+
+.fb {
+	background: #3B5998 url('../img/icons/fb.png') no-repeat;
+}
+
+/* sidebar */
+
+.widgetheader {
+	background: #333;
+	color: #FFF;
+	padding: 8px;
+	font-weight: bold;
+}
+
+.widgetfirst {
+	border-radius: 8px 8px 0 0;
+}
+
+.widgetcont {
+	padding: 8px;
+}
+
+.widgetcont ul li {
+	padding: 8px 0;
+}
+
+#encourage {
+	width: 240px;
+	height: 360px;
+	overflow: hidden;
+}
+

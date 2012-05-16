@@ -1,56 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
- 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<title>Kottu: About/Join</title>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo config('basepath'); ?>/static/yoko.css" />
-	<link rel="icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
-	<!--[if lt IE 9]>
-	<script src="../js/html5.js" type="text/javascript"></script>
-	<![endif]-->
+<div class="content">
 
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo config('basepath'); ?>/static/js/smoothscroll.js?ver=1.0"></script>
-</head>
-<body class="home blog">
-<div id="page" class="clearfix">
-	<header id="branding">
-	<nav id="mainnav" class="clearfix">
-
-	<div class="menu-page-menu-container">
-	<ul id="menu-page-menu" class="menu">
-		<li class="menu-item selected"><a href="<?php echo config('basepath'); ?>/about">About/Join</a></li>
-		<li class="menu-item"><a href="<?php echo config('basepath'); ?>/blogroll">Blogroll</a></li>
-	</ul>
+	<article class="post">
+	<div class="postheader">
+		<h2 class="posttitle">About/Join</h2>
 	</div>
-	</nav><!-- end mainnav -->
-
-	<hgroup id="site-title">
-		<h1><a href="<?php echo config('basepath'); ?>" title="Kottu">Kottu</a></h1>
-		<h2 id="site-description">The Sri Lankan Blog Aggregator</h2>
-	</hgroup><!-- end site-title -->
-	<div class="clear"></div>
-
-</header><!-- end header -->
-<div id="wrap">
-
-<div id="content">
-
-<article class="post type-post status-publish format-standard hentry">
-
-	<div class="entry-details">
-
-	</div><!-- end entry-details -->
-	 
-	<header class="entry-header">
-	<h2 class="entry-title">About/Join</a></h2>
-	</header><!-- end entry-header -->
-        
-	<div class="entry-content">
+	
+	<div class="postcont">
 	<p>Kottu is a Sri Lankan blog aggregator. It basically collects a slice of 
 	the Sri Lankan blogosphere in one place. The only criteria for joining Kottu is:</p>
 	<ol>
@@ -135,18 +90,9 @@
 	wordpress.org is what runs Kottu and it’s pretty simple and powerful. 
 	You do need to rent a server for that. Kottu runs on a Rackspace Cloud Server, 
 	but that’s not necessarily a recommendation.</p>
-	</div><!-- end entry-content -->
-			
-</article>
+	<br>
+	</div>
+	
+	</article>
 
-</div>
-</div>
-
-<footer id="colophon" class="clearfix">
-	Theme: Yoko by <a href="http://www.elmastudio.de/wordpress-themes/">Elmastudio</a><br>
-	<a href="#page" class="top">Top</a>
-</footer><!-- end colophon -->
-
-</div>
-</body>
-</html>
+</div>	

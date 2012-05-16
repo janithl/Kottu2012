@@ -92,11 +92,6 @@
 	<p>To join just send a mail to <a href="mailto:indi@indi.ca">indi@indi.ca</a>. 
 	I’ll get around to a contact form someday.</p>
 	
-	<form action="<?php echo config('basepath') ?>/register/" method="post">
-	<input type="hidden" name="redir" value="<?php echo $_SERVER['REQUEST_URI'] ?>">
-	<button type="submit" data-mini="true" data-inline="true" data-theme="b" data-icon="check">Submit</button>
-	</form>
-	
 	<a href="#settings" data-mini="true" data-inline="true" 
 		data-direction="reverse" data-icon="arrow-l" data-role="button">Go back</a>
 	</div><!-- /content -->

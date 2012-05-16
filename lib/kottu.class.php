@@ -11,11 +11,13 @@ class Kottu
 {
 	private $dbh;
 	private $now;
+	private $stats;
 
 	public function __construct() {
 	
 		$this->dbh = new DBConn();
 		$this->now = time();
+		$this->stats = array();
 	}
 
 
@@ -33,9 +35,9 @@ class Kottu
 			
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
 				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
-				."p.postContent FROM posts AS p, blogs AS b WHERE "
-				."b.bid = p.blogID AND p.language LIKE :lang ORDER BY "
-				."p.serverTimestamp DESC LIMIT $page, 20 ", array(':lang'=>$lang));
+				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
+				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang ORDER BY "
+				."p.serverTimestamp DESC LIMIT $page, 20", array(':lang'=>$lang));
 		}
 		else {
 		
@@ -47,10 +49,10 @@ class Kottu
 
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
 				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
-				."p.postContent FROM posts AS p, blogs AS b WHERE "
-				."b.bid = p.blogID AND p.language LIKE :lang AND "
-				."serverTimestamp > :time ORDER BY postBuzz DESC "
-				."LIMIT $page, 20", array(':lang'=>$lang, ':time'=>$day));
+				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
+				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang AND "
+				."serverTimestamp > :time ORDER BY postBuzz DESC LIMIT $page, 20", 
+				array(':lang'=>$lang, ':time'=>$day));
 
 		}
 
@@ -65,8 +67,11 @@ class Kottu
 				$p['longt'] = date('D, d M Y H:i:s O', $row[3]);
 				$p['buzz']	= $this->chilies($row[4]);
 				$p['blog']	= $row[5];
-				$p['img']	= strlen($row[6]) > 1 ? $row[6] : '../images/none.png';
+				$p['img']	= strlen($row[6]) > 1 ? $row[6] : config('basepath')
+								.'/img/none.png';
 				$p['cont']	= $row[7];
+				$p['fb']	= $row[8];
+				$p['tw']	= $row[9];
 				
 				$posts[] 	= $p;
 			}
@@ -111,11 +116,12 @@ class Kottu
 		$str = "%$str%";
 		$page = ((int) $pageno) * 20;
 		
-		$resultset = $this->dbh->query("SELECT p.postID, p.title, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail FROM " 
-				."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
-				."(p.postContent LIKE :string OR p.title LIKE :string) ORDER BY "
-				."serverTimestamp DESC LIMIT $page, 20", array(':string'=>$str));
+		$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+			."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+			."p.postContent, p.fbCount, p.tweetCount FROM " 
+			."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
+			."(p.postContent LIKE :string OR p.title LIKE :string) ORDER BY "
+			."serverTimestamp DESC LIMIT $page, 20", array(':string'=>$str));
 		
 		if($resultset) {
 		
@@ -123,16 +129,34 @@ class Kottu
 			
 				$p['id']	= $row[0];
 				$p['title'] = strip_tags($row[1]);
-				$p['ts']	= $this->humants($row[2]);
-				$p['buzz']	= $this->chilies($row[3]);
-				$p['blog']	= $row[4];
-				$p['img']	= strlen($row[5]) > 0 ? $row[5] : '../images/none.png';
+				$p['link']	= $row[2];
+				$p['ts']	= $this->humants($row[3]);
+				$p['buzz']	= $this->chilies($row[4]);
+				$p['blog']	= $row[5];
+				$p['img']	= strlen($row[5]) > 0 ? $row[6] : config('basepath')
+								.'/img/none.png';
+				$p['cont']	= $row[7];
+				$p['fb']	= $row[8];
+				$p['tw']	= $row[9];
 				
 				$posts[] 	= $p;
 			}
 		}
 		
 		return $posts;
+	}
+	
+	/*
+		returns number of blogs listed on Kottu
+	*/
+	public function fetchnumblogs() {
+	
+		$resultset = $this->dbh->query("SELECT COUNT(*) FROM blogs", array());
+		
+		if($resultset && ($row = $resultset->fetch()) != false) {
+			
+			return $row[0];
+		}
 	}
 	
 	/*
@@ -185,6 +209,154 @@ class Kottu
 		
 		return $blogs;
 	}
+	
+	/*
+		Gets the eVillage scroller in the sidebar
+	*/
+	public function sidescroller() {
+	
+		$posts = array();
+		
+		$resultset = $this->dbh->query("SELECT p.link, p.title, "
+			."p.serverTimestamp, p.postContent FROM posts AS p WHERE p.blogid "
+			."IN (1407, 1403, 419, 278, 1411, 1412, 1413, 1414, 1431) ORDER BY "
+			."serverTimestamp DESC LIMIT 5", array());
+		
+		if($resultset) {
+			while (($row = $resultset->fetch()) != false) {
+			
+				$p['link']	= $row[0];
+				$p['title']	= $row[1];
+				$p['ts']	= $this->humants($row[2]);
+				$p['cont']	= $row[3];
+				
+				$posts[] = $p;
+			}
+		}
+		
+		return $posts;
+	}
+	
+	/*
+		
+	*/
+	public function updatebuzz($postid, $buzz, $tcount, $fcount) {
+	
+		$this->dbh->query("UPDATE posts SET postBuzz = :buzz, tweetCount = :tw, "
+					."fbCount = :fb, api_ts = :ts WHERE postID = :id",
+					array(':buzz'=>$buzz, ':tw'=>$tcount, ':fb'=>$fcount, 
+					':ts'=>$this->now,':id'=>$postid));
+	}
+	
+	/*
+		Go.php click inserter
+		
+		If there is a click from this ip address within the last 12 hours,
+		we won't register a new click. btw, 12 hrs = 43200 seconds
+	*/
+	function insertclick($ip, $pid)
+	{
+		$resultset = $this->dbh->query("SELECT MAX(timestamp) FROM clicks WHERE "
+			."timestamp > :hrs AND ip = :ip AND pid = :pid", 
+			array(':ip'=>$ip, ':pid'=>$postid, ':hrs'=>($this->now - 43200))); 
+
+		if($resultset && $resultset->fetch() == false)
+		{
+			$resultset = $this->dbh->query("INSERT INTO clicks(ip, pid, "
+				."timestamp) VALUES (:ip, :pid, :ts)", array(':ip'=>$ipadr, 
+				':pid'=>$pid, ':ts'=>$this->now));
+		}
+
+		
+	}
+	
+	/*
+	$resultset = $DBConn->query("SELECT postID, link FROM posts WHERE ".
+		"serverTimestamp > (unix_timestamp(now()) - 86400) ORDER BY api_ts ASC LIMIT 20", array());
+
+	if($resultset)
+	{
+		// an empty array to hold the stats
+		$results = array();
+
+		// a counter, for debugging and statistics
+		$counter = 0;
+
+		//We get the maximum counts for all the metrics, for calculation purposes
+		$maxarr = Stats::getMaximums($DBConn);
+
+		//if($maxarr == false) { die("spicecalc could not get maximums and died"); }
+
+		while($array = $resultset->fetch())
+		{
+			$postid = $array[0];
+			$url 	= $array[1];
+
+			$tweets = Stats::getTweetCount($url);
+			$fbooks = Stats::getFBCount($url);
+			$clicks = Stats::getClicks($postid, $DBConn);
+
+			$results[$postid] = array($tweets, $fbooks, $clicks);
+
+			// we check if any of the new tweet/fb counts are bigger than the max
+			// if they are so, we have to update the "max".
+			if ($maxarr['maxtweets'] < $tweets) { $maxarr['maxtweets'] = $tweets; } 
+			if ($maxarr['maxfbooks'] < $fbooks) { $maxarr['maxfbooks'] = $fbooks; }
+
+			$counter++;
+		}
+
+		$now = time();
+
+		// now we do the calculations and write the stats back to db, post by post
+		foreach($results as $key => $value)
+		{
+			$tweetbuzz = unskew($value[0] / ($maxarr['maxtweets'] + 1));
+			$fbookbuzz = unskew($value[1] / ($maxarr['maxfbooks'] + 1));
+			$clickbuzz = unskew($value[2] / ($maxarr['totalclicks'] + 1));
+
+			// we do the calculations...
+			$spice = ($tweetbuzz * $tweetweight) + ($fbbuzz * $fbookweight) + ($clickbuzz * $clickweight);
+
+			// ...and put away our toys
+			
+	/*
+		get total clicks (all day) and max fb likes and tweets (per post)
+	*/				
+	public function getmaxstats()
+	{
+	
+		if(count($this->stats) == 0) {
+			
+			/* 24 * 60 * 60 seconds = 1 day */
+			$day = $this->now - 86400;
+			
+			$rs1 = $this->dbh->query("SELECT COUNT(*) FROM clicks WHERE "
+				."timestamp > :day", array(':day'=>$day));
+			$rs2 = $this->dbh->query("SELECT MAX(tweetCount), MAX(fbCount) FROM "
+				."posts WHERE serverTimestamp > :day", array(':day'=>$day));
+
+			if($rs1 && $rs2)
+			{
+				$arr1 = $rs1->fetch();
+				$arr2 = $rs2->fetch();
+
+				$this->stats['totalclicks']	= $arr1[0];
+				$this->stats['maxtweets']	= $arr2[0];
+				$this->stats['maxfbooks']	= $arr2[1];
+			}
+		}
+
+		return $this->stats;
+	}
+
+	/*
+		make sure values are always between 0 and 1
+	*/
+	public function unskew($x) {
+	
+		return ($x > 1) ? 1 : (($x < 0) ? 0 : $x);
+	} 
 	
 	/*
 		returns human readable timestamp 

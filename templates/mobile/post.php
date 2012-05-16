@@ -4,9 +4,9 @@
 		<h2><?php echo $this->post['title']; ?></h2>
 		<p>Posted on <?php echo $this->post['blog']; ?>  
 		<span class="timestamp">(<?php echo $this->post['ts']; ?>)</span>  
-		<img src="<?php echo config('basepath') . "/img/icons/" . $this->post['buzz']; ?>"/></p>
+		<img src="<?php echo config('basepath') . '/img/icons/' . $this->post['buzz']; ?>"/></p>
 		<?php if(strlen($this->post['img']) > 0): ?>
-		<p><img src="<?php echo config('basepath') . "/img/?q=80&src=" . $this->post['img']; ?>" /></p>
+		<p><img src="<?php echo config('basepath') . '/img/?q=80&src=' . $this->post['img']; ?>" /></p>
 		<?php endif; ?>
 		
 		<p><?php echo $this->post['cont']; ?></p>

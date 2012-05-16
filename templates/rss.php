@@ -32,7 +32,7 @@
 	<pubDate><?php echo $i['longt']; ?></pubDate>
 	<dc:creator><![CDATA[<?php echo strip_tags($i['blog']); ?>]]></dc:creator>
 	<description><![CDATA[<?php echo strip_tags(str_replace("\n", " ", $i['cont'])); ?>]]></description>
-<?php if($i['img'] !== '../images/none.png'): ?>
+<?php if($i['img'] !== config('basepath').'/img/none.png'): ?>
 	<media:content url="<?php echo $i['img']; ?>" medium="image"><media:title type="html">Thumbnail</media:title></media:content>
 <?php endif; ?>
 	</item>
