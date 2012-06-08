@@ -88,7 +88,7 @@ header {
 }
 
 header a {
-	color: #FF003C;
+	color: #EA3556;
 }
 
 header img {
@@ -201,6 +201,26 @@ footer {
 .timemenu a:hover, .timemenu .selected a:hover {
 	background: #333;
 	color: #FFF;
+}
+
+/* blog */
+
+.blog {
+	background:#333;
+	color: #FFF;
+}
+
+.blog a, .blog a:hover {
+	color: #FFF;
+}
+
+.blog .timemenu {	
+	padding-bottom: 10px;
+}
+
+.blog .timemenu a:hover, .timemenu .selected a:hover {
+	background: #FFF;
+	color: #333;
 }
 
 /* search form */

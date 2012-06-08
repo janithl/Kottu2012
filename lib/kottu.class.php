@@ -110,7 +110,7 @@ class Kottu
 	/*
 		basic search functionality
 	*/
-	public function search($str, $pageno) {
+	public function search($str, $pageno = 0) {
 	
 		$posts = array();
 		$str = "%$str%";
@@ -357,6 +357,68 @@ class Kottu
 	
 		return ($x > 1) ? 1 : (($x < 0) ? 0 : $x);
 	} 
+	
+	/*
+		returns all the posts for a particular blogID
+	*/
+	public function fetchblogposts($blogid, $pageno = 0, $pop = false) {
+	
+		$posts	= array();
+		$page	= ((int) $pageno) * 20;
+		$order	= $pop ? 'serverTimestamp' : 'postBuzz';
+		
+		$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+			."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+			."p.postContent, p.fbCount, p.tweetCount FROM " 
+			."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
+			."p.blogID = :blogid ORDER BY $order DESC LIMIT $page, 20", 
+			array(':blogid'=>$blogid));
+		
+		if($resultset) {
+		
+			while(($row = $resultset->fetch()) != false) {
+			
+				$p['id']	= $row[0];
+				$p['title'] = strip_tags($row[1]);
+				$p['link']	= $row[2];
+				$p['ts']	= $this->humants($row[3]);
+				$p['buzz']	= $this->chilies($row[4]);
+				$p['blog']	= $row[5];
+				$p['img']	= strlen($row[5]) > 0 ? $row[6] : config('basepath')
+								.'/img/none.png';
+				$p['cont']	= $row[7];
+				$p['fb']	= $row[8];
+				$p['tw']	= $row[9];
+				
+				$posts[] 	= $p;
+			}
+		}
+		
+		return $posts;
+	}
+	
+	/*
+		returns blog details for a blogID
+	*/
+	public function blogdetails($blogid) {
+	
+		$blog	= array();
+		
+		$resultset = $this->dbh->query("SELECT blogName, blogURL, COUNT(postID), "
+			."AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, posts AS p "
+			."WHERE b.bid = p.blogID AND b.bid = :id", array(':id'=>$blogid));
+		
+		if($resultset && (($row = $resultset->fetch()) != false)) {
+			
+			$blog['name']	= $row[0];
+			$blog['url']	= $row[1];
+			$blog['count']	= $row[2];
+			$blog['buzz']	= $this->chilies($row[3]);
+			$blog['ts']		= $this->humants($row[4]);
+		}
+		
+		return $blog;
+	}
 	
 	/*
 		returns human readable timestamp 

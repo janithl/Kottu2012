@@ -9,6 +9,31 @@
 	</article>
 <?php endif; ?>
 
+<?php if(isset($this->blog['url'])): ?>
+	<article class="post blog">
+	<div class="postheader">
+		<h3 class="posttitle">
+		<a href="<?php echo $this->blog['url']; ?>"><?php echo $this->blog['name']; ?> 
+		<small>(<?php echo $this->blog['url']; ?>)</small></a>
+		</h3>
+	</div>
+	<div class="timemenu">
+	<ul>
+	<li class="first">Order Posts By: </li>
+	<li <?php echo ($this->time == 'off') ? 'class="selected"' : ''?>>
+	<a href="<?php echo config('basepath') . '/blog/' . $this->bid; ?>">Latest</a></li>
+	<li <?php echo ($this->time == 'week')  ? 'class="selected"' : ''?>>
+	<a href="<?php echo config('basepath') . '/blog/' . $this->bid . '/popular/'; ?>">Popular</a></li>
+	</ul>
+	</div>
+	<div class="postfooter" style="clear:both">
+		<span class="timestamp">Last Updated: <?php echo $this->blog['ts']; ?></span>
+		<span class="timestamp"><?php echo $this->blog['count']; ?> posts on Kottu</span>
+		<span class="timestamp">Average Spice: <img src="<?php echo config('basepath') . '/img/icons/' . $this->blog['buzz']; ?>"/></span>
+	</div>
+	</article>
+<?php endif; ?>
+
 <?php if($this->time != 'off'): ?>
 	<article class="post">
 	<div class="timemenu">
@@ -33,7 +58,7 @@
 		<h2 class="posttitle">
 		<a href="<?php echo config('basepath') . '/go/?id=' . $i['id'] . '&url=' . $i['link']; ?>" name="<?php echo $i['id']; ?>"><?php echo $i['title']; ?></a>
 		</h2>
-		<a href="#"><?php echo $i['blog']; ?></a> 
+		<a href="./blog/88"><?php echo $i['blog']; ?></a> 
 	</div>
 	
 	<div class="postcont">

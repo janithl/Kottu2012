@@ -162,7 +162,31 @@ elseif($path[$i] == 'search') {
 	$out->render('web/items.php');
 	$out->render('web/tail.php');
 }
-else {
+elseif($path[$i] == 'blog') {
+	
+	/* Display posts from one blog */
+	
+	$out->bid	= isset($path[$i + 1]) && strlen($path[$i + 1]) ? $path[$i + 1] : 0;
+	$out->blog	= $k->blogdetails($out->bid);
+	$out->lang	= 'all';
+	$out->time	= 'off';
+	$out->page	= isset($path[$i + 2]) && strlen($path[$i + 2]) ? $path[$i + 2] : 0;
+	
+	$out->title = "Kottu: Posts from " . $out->blog['name'];
+	$out->posts = $k->fetchblogposts($path[$i + 1], $out->page);
+	
+	$out->numblogs	= $k->fetchnumblogs();
+	$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
+	$out->evillage	= $k->sidescroller();
+
+	$out->render('web/head.php');
+	$out->render('web/items.php');
+	$out->render('web/sidebar.php');
+	$out->render('web/tail.php');
+}
+elseif($path[$i] == '' || preg_match('/^(all|en|si|ta)$/', $path[$i]) && 
+	(!isset($path[$i+1]) || $path[$i+1] == '' || 
+	preg_match('/^(off|today|week|month|all)$/', $path[$i+1]))) {
 
 	/* Normal Kottu website */
 
