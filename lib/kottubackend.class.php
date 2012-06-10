@@ -147,9 +147,8 @@ class KottuBackend
 	*/
 	public function calculatespice() {
 	
-		/* import the libraries! */
+		/* import the Facebook library! */
 		require('./lib/FacebookSDK/facebook.php');
-		require('./lib/simple_html_dom.php');
 		
 		/* initialise FB app instance */
 		$this->fbapp = new Facebook(array(
@@ -324,13 +323,23 @@ class KottuBackend
 	*/
 	public function feedget() {
 	
-		/* import simplepie and get rid of the million errors that it throws */
+		/* import simplepie/dom and hide the million errors that it throws */
 		error_reporting(E_ERROR);
 		require('./lib/SimplePie/simplepie.inc');
+		require('./lib/simple_html_dom.php');
 		
-		/* we get 50 blogs least recently accessed according to access time */
-		$resultset = $this->dbh->query("SELECT bid, blogRSS FROM blogs ORDER BY "
-						."access_ts ASC LIMIT 50", array());
+		/*
+			we get 50 blogs - 30 that have updated in the last two weeks and 
+		 	20 that have not - sorted on least recently accessed
+		 */
+		$resultset = $this->dbh->query("(SELECT bid, blogRSS FROM blogs AS b, "
+						."posts as p WHERE p.blogid = b.bid GROUP BY blogid "
+						."HAVING MAX(serverTimestamp) > :twks ORDER BY "
+						."access_ts ASC LIMIT 30) UNION (SELECT bid, blogRSS "
+						."FROM blogs AS b, posts as p WHERE p.blogid = b.bid "
+						."GROUP BY blogid HAVING MAX(serverTimestamp) <= :twks "
+						."ORDER BY access_ts ASC LIMIT 20)", 
+						array(':twks' => $this->now - 1209600));
 
 		if($resultset)	{
 
