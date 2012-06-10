@@ -380,3 +380,17 @@ article {
 	color:#FFF;
 }
 
+/* tags */
+
+.tag {
+	line-height: 1.2;
+}
+.tagsize1 {
+	font-size: 120%;
+}
+.tagsize2 {
+	font-size: 140%;
+}
+.tagsize3 {
+	font-size: 160%;
+}

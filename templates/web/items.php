@@ -1,50 +1,4 @@
 <div class="content">
-	<article class="post">
-	<div class="postheader">
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/tech/'; ?>">tech</a>
-	</span>
-	<span class="tag tagsize1">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/nature/'; ?>">nature</a>
-	</span>
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/news/'; ?>">news</a>
-	</span>
-	<span class="tag tagsize1">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/education/'; ?>">education</a>
-	</span>
-	<span class="tag tagsize1">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/travel/'; ?>">food/travel</a>
-	</span>
-	<span class="tag tagsize3">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/sports/'; ?>">sports</a>
-	</span>
-	<span class="tag tagsize3">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/personal/'; ?>">personal</a>
-	</span>
-	<span class="tag tagsize1">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/poetry/'; ?>">poetry</a>
-	</span>
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/business/'; ?>">business</a>
-	</span>
-	<span class="tag tagsize1">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/faith/'; ?>">faith</a>
-	</span>
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/entertainment/'; ?>">arts</a>
-	</span>
-	<span class="tag tagsize3">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/politics/'; ?>">politics</a>
-	</span>
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/photo/'; ?>">photo</a>
-	</span>
-	<span class="tag tagsize2">
-	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/other/'; ?>">etc</a>
-	</span>
-	</div>
-	</article>
 
 <?php if($this->title == "Kottu: Search"): ?>
 	<article class="post">
@@ -80,7 +34,7 @@
 	</article>
 <?php endif; ?>
 
-<?php if($this->time != 'off'): ?>
+<?php if($this->time == 'today' || $this->time == 'week' || $this->time == 'month'): ?>
 	<article class="post">
 	<div class="timemenu">
 	<ul>

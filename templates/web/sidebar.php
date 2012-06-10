@@ -6,6 +6,53 @@
 	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
 	</form>
 	</div>
+	
+	<div class="widgetheader">Tags</div>
+	<div class="widgetcont">
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/tech/'; ?>">tech</a>
+	</span>
+	<span class="tag tagsize1">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/nature/'; ?>">nature</a>
+	</span>
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/news/'; ?>">news</a>
+	</span>
+	<span class="tag tagsize1">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/education/'; ?>">education</a>
+	</span>
+	<span class="tag tagsize1">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/travel/'; ?>">food/travel</a>
+	</span>
+	<span class="tag tagsize3">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/sports/'; ?>">sports</a>
+	</span>
+	<span class="tag tagsize3">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/personal/'; ?>">personal</a>
+	</span>
+	<span class="tag tagsize1">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/poetry/'; ?>">poetry</a>
+	</span>
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/business/'; ?>">business</a>
+	</span>
+	<span class="tag tagsize1">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/faith/'; ?>">faith</a>
+	</span>
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/entertainment/'; ?>">arts</a>
+	</span>
+	<span class="tag tagsize3">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/politics/'; ?>">politics</a>
+	</span>
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/photo/'; ?>">photo</a>
+	</span>
+	<span class="tag tagsize2">
+	<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/other/'; ?>">etc</a>
+	</span>
+	</div>
+	
 	<div class="widgetheader">Hot Posts</div>
 	<div class="widgetcont">
 	<ul>
@@ -18,12 +65,14 @@
 	</ul>
 	<div class="hotlink"><a href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">read more →</a></div>
 	</div>
+	
 	<div class="widgetheader">Sri Lanka on Flickr</div>
 	<div class="widgetcont">
 	<script type="text/javascript" 
 src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=m&layout=x&source=all_tag&tag=lanka%2C+srilanka"></script>
 	<div class="clear"></div>
 	</div>
+	
 	<div class="widgetheader">Encourage Them!</div>
 	<div class="widgetcont" id="encourage">
 	<p>These are young bloggers from eVillages throughout the country. Please 

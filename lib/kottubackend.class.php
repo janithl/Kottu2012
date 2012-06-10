@@ -208,9 +208,9 @@ class KottuBackend
 			
 			foreach($poststats as $id => $stats) {
 			
-				$twbuzz = unskew($stats[0] / ($this->stats['maxtweets'] + 1));
-				$fbbuzz = unskew($stats[1] / ($this->stats['maxfbooks'] + 1));
-				$clbuzz = unskew($stats[2] / ($this->stats['totclicks'] + 1));
+				$twbuzz = $this->unskew($stats[0] / ($this->stats['maxtweets'] + 1));
+				$fbbuzz = $this->unskew($stats[1] / ($this->stats['maxfbooks'] + 1));
+				$clbuzz = $this->unskew($stats[2] / ($this->stats['totclicks'] + 1));
 				
 				/* final spice calculation */
 				$spice = ($twbuzz * config('twweight')) + ($fbbuzz * 

@@ -59,7 +59,7 @@ else {
 			header('location: ' . config('basepath'));
 		}
 	}
-	elseif($path[$i] == 'admin' && $path[$i + 2] === config('besecret')) {
+	elseif($path[$i] == 'admin' && sha1($path[$i + 2]) === config('besecret')) {
 		
 		if($path[$i + 1] == 'cacheclear' || $path[$i + 1] == 'feedget' ||
 			$path[$i + 1] == 'calculatespice') {
@@ -212,12 +212,33 @@ else {
 		ob_end_flush();
 		
 	}
-	elseif($path[$i + 1] == 'search' || $path[$i + 1] == 'tags') {
+	elseif($path[$i + 1] == 'tags' && strlen($path[$i + 2]) > 0) {
+	
+		/* Tags */
+		
+		$out->title = "Kottu: Posts Tagged Under " . htmlentities($path[$i + 2]);
+		$out->posts = array();
+		$out->numblogs	= $k->fetchnumblogs();
+		
+		$out->page	= isset($path[$i + 3]) && strlen($path[$i + 3]) ? 
+								$path[$i + 3] : 0;
+		$out->lang	= $path[$i];
+		$out->posts = $k->search('', $out->page, $path[$i], $path[$i + 2]);
+		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
+		$out->evillage	= $k->sidescroller();
+		$out->toplink	= "tags/{$path[$i + 2]}/";
+		$out->currentpage	= $out->lang . '/' . $out->toplink;
+		
+		$out->render('web/head.php');
+		$out->render('web/items.php');
+		$out->render('web/sidebar.php');
+		$out->render('web/tail.php');
+	}
+	elseif($path[$i + 1] == 'search') {
 
 		/* Web Search */
 
-		$out->title = ($path[$i + 1] == 'tags') ? "Kottu: Posts Tagged Under "
-						. htmlentities($path[$i + 2]) : "Kottu: Search";
+		$out->title = "Kottu: Search";
 		$out->posts = array();
 		$out->numblogs	= $k->fetchnumblogs();
 		$out->str = '';
@@ -228,16 +249,7 @@ else {
 		$out->time = 'off';
 		$out->page = isset($_GET['page']) ? $_GET['page'] : 0;
 
-		if($path[$i + 1] == 'tags' && strlen($path[$i + 2]) > 0) {
-		
-			$out->page	= isset($path[$i + 3]) && strlen($path[$i + 3]) ? 
-								$path[$i + 3] : 0;
-			$out->lang	= $path[$i];
-			$out->posts = $k->search('', $out->page, $path[$i], $path[$i + 2]);
-			$out->toplink		= "tags/{$path[$i + 2]}/";
-			$out->currentpage	= $out->lang . '/' . $out->toplink;
-		}
-		else if(isset($_GET['q']) && strlen($_GET['q']) > 0) {
+		if(isset($_GET['q']) && strlen($_GET['q']) > 0) {
 	
 			$out->posts = $k->search($_GET['q'], $out->page, $path[$i]);
 			$out->str	= urldecode($_GET['q']);

@@ -46,7 +46,7 @@
 	
 	The page that you were looking for could not be found. Would you like to search for it instead?<br><br>
 	
-	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'); ?>/search/" >
+	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'); ?>/all/search/" >
 	<input tabindex=1 type="text" class="searchbox" name="q" id="q" />
 	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
 	</form>

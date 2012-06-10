@@ -25,7 +25,7 @@ $config['stacache'] = 1800;
 $config['dyncache'] = 180;
 
 /* back-end secret key */
-$config['besecret'] = 'backendsecretkeywithunicorns';
+$config['besecret'] = sha1('backendsecretkeywithunicorns');
 
 /* facebook app id and secret key */
 $config['fbappid']	= 'id';
