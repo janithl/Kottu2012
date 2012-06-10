@@ -55,17 +55,16 @@ This software uses the following external libraries and CSS files:
 	Copyright 2011 Yahoo! Inc. All rights reserved.   
 	Licensed under the BSD License   
 
-* [Facebook PHP SDK](http://developer.facebook.com/)
+* [Facebook PHP SDK](http://developer.facebook.com/)  
 	Copyright 2011 Facebook, Inc.  
 	Licensed under the [Apache License, Version 2.0]
-	(http://www.apache.org/licenses/LICENSE-2.0 )  
+	(http://www.apache.org/licenses/LICENSE-2.0)  
 	
-* [Simple HTML DOM](http://sourceforge.net/projects/simplehtmldom/)
-	1.11 (Rev: 184)
-	Copyright S.C. Chen, John Schlick and Rus Carroll
- 	Licensed under The MIT License
-
-
+* [Simple HTML DOM](http://sourceforge.net/projects/simplehtmldom/)  
+	Version 1.11 (Rev: 184)  
+	Copyright S.C. Chen, John Schlick and Rus Carroll  
+ 	Licensed under [The MIT License]
+	(http://www.opensource.org/licenses/mit-license.php)
 
 Structure
 ---------
