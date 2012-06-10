@@ -1,7 +1,7 @@
 <div class="sidebar">
 	<div class="widgetheader widgetfirst">Search</div>
 	<div class="widgetcont">
-	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'); ?>/search/" >
+	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'),'/',$this->lang; ?>/search/" >
 	<input tabindex=1 type="text" class="searchbox" value="<?php echo $this->str; ?>" name="q" id="q" />
 	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
 	</form>
@@ -11,14 +11,14 @@
 	<ul>
 <?php foreach($this->hotposts as $p): ?>
 	<li>
-		<a href="<?php echo config('basepath') . '/go/?id=' . $p['id'] . '&url=' . $p['link']; ?>">
+		<a target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $p['id'] . '&url=' . $p['link']; ?>">
 		<?php echo $p['title']; ?></a>
 	</li>
 <?php endforeach; ?>
-	<li>(<a href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">read more → </a>)
-	</ul>		
+	</ul>
+	<div class="hotlink"><a href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">read more →</a></div>
 	</div>
-	<div class="widgetheader">Sri Lanka in Flickr</div>
+	<div class="widgetheader">Sri Lanka on Flickr</div>
 	<div class="widgetcont">
 	<script type="text/javascript" 
 src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=m&layout=x&source=all_tag&tag=lanka%2C+srilanka"></script>

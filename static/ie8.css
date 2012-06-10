@@ -1,0 +1,14 @@
+html		{ background: #DDD; }
+
+header		{ margin: 0 0 20px; padding: 6px 40px; background: #333333; color: #FFF; position: relative; clear: both; display: block; }
+
+.content	{ width: 600px; background: #FFF; }
+
+.postheader { display: block; }
+
+.postcont	{ display: block; }
+
+.postfooter { clear: both; }
+
+.chili		{ float: none; display: inline; margin-left: 120px; }
+

@@ -5,19 +5,18 @@
 
 	09/05/12	This is where all the Kottu logic will reside [janith]
 	
+	09/06/12	Added tags [janith]
 */
 
 class Kottu
 {
 	private $dbh;
 	private $now;
-	private $stats;
 
 	public function __construct() {
 	
 		$this->dbh = new DBConn();
 		$this->now = time();
-		$this->stats = array();
 	}
 
 
@@ -34,7 +33,7 @@ class Kottu
 		if($time === 'off') {
 			
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
 				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
 				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang ORDER BY "
 				."p.serverTimestamp DESC LIMIT $page, 20", array(':lang'=>$lang));
@@ -48,7 +47,7 @@ class Kottu
 			elseif($time == 'month'){ $day = $this->now - (30 * 24 * 60 * 60); }
 
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
 				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
 				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang AND "
 				."serverTimestamp > :time ORDER BY postBuzz DESC LIMIT $page, 20", 
@@ -67,11 +66,13 @@ class Kottu
 				$p['longt'] = date('D, d M Y H:i:s O', $row[3]);
 				$p['buzz']	= $this->chilies($row[4]);
 				$p['blog']	= $row[5];
-				$p['img']	= strlen($row[6]) > 1 ? $row[6] : config('basepath')
+				$p['bid']	= $row[6];
+				$p['img']	= strlen($row[7]) > 1 ? $row[7] : config('basepath')
 								.'/img/none.png';
-				$p['cont']	= $row[7];
-				$p['fb']	= $row[8];
-				$p['tw']	= $row[9];
+				$p['img']	= preg_replace('/&*(w=|h=)[0-9]+/', '', $p['img']); 
+				$p['cont']	= strip_tags($row[8]);
+				$p['fb']	= $row[9];
+				$p['tw']	= $row[10];
 				
 				$posts[] 	= $p;
 			}
@@ -101,6 +102,7 @@ class Kottu
 			$p['buzz']	= $this->chilies($row[4]);
 			$p['blog']	= $row[5];
 			$p['img']	= $row[6];
+			$p['img']	= preg_replace('/&*(w=|h=)[0-9]+/', '', $p['img']);
 			$p['cont']	= strip_tags($row[7]);
 		}
 		
@@ -110,18 +112,72 @@ class Kottu
 	/*
 		basic search functionality
 	*/
-	public function search($str, $pageno = 0) {
+	public function search($str, $pageno=0, $lang='all', $tags=false) {
 	
 		$posts = array();
 		$str = "%$str%";
 		$page = ((int) $pageno) * 20;
+		$lang = ($lang === 'all') ? '%' : $lang;
 		
-		$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-			."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
-			."p.postContent, p.fbCount, p.tweetCount FROM " 
-			."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
-			."(p.postContent LIKE :string OR p.title LIKE :string) ORDER BY "
-			."serverTimestamp DESC LIMIT $page, 20", array(':string'=>$str));
+		if($tags) {
+		
+			/* array of possible related tags */
+			$tagarray = array( 
+'tech' 		=> array('tech','science','linux','windows','virus',',mobile',
+				'software','phones','android','electronic','physics',
+				'mathematics','maths','web,','sharepoint','internet'),
+'travel'	=> array('travel','food','recipes','hotel','hike','hiking','beach'),
+'nature'	=> array('nature','environment','conservation','animal','wildlife',
+				'pollution','forest'),
+'sports'	=> array('(,|\b)sport,','(,|\b)sports,','cricket','rugby',
+				'football','soccer','volleyball','athlet','tennis'),
+'news'		=> array('news','breaking','security','election','media',',press'),
+'personal'	=> array('personal','life,','love','family','romance','exam',
+				'emotion','thought','story','stories','social','friend',
+				'boredom','rant','ramblings','work'),
+'entertainment'	=> array('entertainment','art,','music','song','album','movie',
+				'film','cinema',' tv ','video','literature','literary',
+				'magazine','event'),
+'poetry'	=> array('poetry','poem','poetry'),
+'business'	=> array('business','industry','bank','economy','economics',
+				'development','agricultur'),
+'politics'	=> array('politics','election','peace','war,','conflict','security',
+				'economy','development','youth','tigers','community'),
+'photo'		=> array('photo','image'),
+'faith'		=> array('faith','religion','belief','buddhis','christian','hindu',
+				'islam','muslim','god,','atheis'),
+'education'	=> array('education','exam','university','uni,','school','teach'),
+'other'		=> array('other','uncategorized','random','general'));
+
+			/* sanitize */
+			$tags = preg_replace("/[^a-z]/", "", $tags);
+	
+			if(is_array($tagarray[$tags])) {
+			
+				$tagtext = '.*(' . implode('|',$tagarray[$tags]) . ').*';
+				
+				$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
+				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, " 
+				."blogs AS b WHERE b.bid = p.blogID AND language LIKE :lang AND "
+				."tags RLIKE :tags ORDER BY serverTimestamp DESC LIMIT $page, 20", 
+				array(':lang' => $lang, ':tags' => $tagtext));
+			}
+			else {
+			
+				$resultset = false;
+			}
+		}
+		else {
+		
+			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
+			."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
+			."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, "
+			."blogs AS b WHERE b.bid = p.blogID AND language LIKE :lang AND "
+			."(p.postContent LIKE :string OR p.title LIKE :string OR b.blogName "
+			."LIKE :string) ORDER BY serverTimestamp DESC LIMIT $page, 20", 
+			array(':lang' => $lang, ':string' => $str));
+		}
 		
 		if($resultset) {
 		
@@ -133,11 +189,13 @@ class Kottu
 				$p['ts']	= $this->humants($row[3]);
 				$p['buzz']	= $this->chilies($row[4]);
 				$p['blog']	= $row[5];
-				$p['img']	= strlen($row[5]) > 0 ? $row[6] : config('basepath')
+				$p['bid']	= $row[6];
+				$p['img']	= strlen($row[7]) > 1 ? $row[7] : config('basepath')
 								.'/img/none.png';
-				$p['cont']	= $row[7];
-				$p['fb']	= $row[8];
-				$p['tw']	= $row[9];
+				$p['img']	= preg_replace('/&*(w=|h=)[0-9]+/', '', $p['img']);
+				$p['cont']	= $row[8];
+				$p['fb']	= $row[9];
+				$p['tw']	= $row[10];
 				
 				$posts[] 	= $p;
 			}
@@ -166,14 +224,14 @@ class Kottu
 	
 		$blogs = array();
 		
-		$resultset = $this->dbh->query("SELECT blogName, blogURL FROM blogs "
+		$resultset = $this->dbh->query("SELECT bid, blogName FROM blogs "
 			."ORDER BY blogName", array());
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
 			
-				$b['name']	= $row[0];
-				$b['link']	= $row[1];
+				$b['bid']	= $row[0];
+				$b['name']	= $row[1];
 				
 				$blogs[] = $b;
 			}
@@ -189,7 +247,7 @@ class Kottu
 	
 		$blogs = array();
 		
-		$resultset = $this->dbh->query("SELECT blogName, blogURL, "
+		$resultset = $this->dbh->query("SELECT bid, blogName, "
 			."AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, posts AS p "
 			."WHERE b.bid = p.blogID AND p.serverTimestamp > :month GROUP BY "
 			."b.bid HAVING COUNT(p.postBuzz) >= 3 ORDER BY AVG(postBuzz) DESC "
@@ -198,8 +256,8 @@ class Kottu
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
 			
-				$b['name']	= $row[0];
-				$b['link']	= $row[1];
+				$b['bid']	= $row[0];
+				$b['name']	= $row[1];
 				$b['buzz']	= $this->chilies($row[2]);
 				$b['lupdt']	= $this->humants($row[3]);
 
@@ -219,8 +277,8 @@ class Kottu
 		
 		$resultset = $this->dbh->query("SELECT p.link, p.title, "
 			."p.serverTimestamp, p.postContent FROM posts AS p WHERE p.blogid "
-			."IN (1407, 1403, 419, 278, 1411, 1412, 1413, 1414, 1431) ORDER BY "
-			."serverTimestamp DESC LIMIT 5", array());
+			."IN (11407, 11403, 10419, 10278, 11411, 11412, 11413, 11414, 11431) "
+			."ORDER BY serverTimestamp DESC LIMIT 5", array());
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
@@ -235,17 +293,6 @@ class Kottu
 		}
 		
 		return $posts;
-	}
-	
-	/*
-		
-	*/
-	public function updatebuzz($postid, $buzz, $tcount, $fcount) {
-	
-		$this->dbh->query("UPDATE posts SET postBuzz = :buzz, tweetCount = :tw, "
-					."fbCount = :fb, api_ts = :ts WHERE postID = :id",
-					array(':buzz'=>$buzz, ':tw'=>$tcount, ':fb'=>$fcount, 
-					':ts'=>$this->now,':id'=>$postid));
 	}
 	
 	/*
@@ -265,98 +312,8 @@ class Kottu
 			$resultset = $this->dbh->query("INSERT INTO clicks(ip, pid, "
 				."timestamp) VALUES (:ip, :pid, :ts)", array(':ip'=>$ipadr, 
 				':pid'=>$pid, ':ts'=>$this->now));
-		}
-
-		
+		}	
 	}
-	
-	/*
-	$resultset = $DBConn->query("SELECT postID, link FROM posts WHERE ".
-		"serverTimestamp > (unix_timestamp(now()) - 86400) ORDER BY api_ts ASC LIMIT 20", array());
-
-	if($resultset)
-	{
-		// an empty array to hold the stats
-		$results = array();
-
-		// a counter, for debugging and statistics
-		$counter = 0;
-
-		//We get the maximum counts for all the metrics, for calculation purposes
-		$maxarr = Stats::getMaximums($DBConn);
-
-		//if($maxarr == false) { die("spicecalc could not get maximums and died"); }
-
-		while($array = $resultset->fetch())
-		{
-			$postid = $array[0];
-			$url 	= $array[1];
-
-			$tweets = Stats::getTweetCount($url);
-			$fbooks = Stats::getFBCount($url);
-			$clicks = Stats::getClicks($postid, $DBConn);
-
-			$results[$postid] = array($tweets, $fbooks, $clicks);
-
-			// we check if any of the new tweet/fb counts are bigger than the max
-			// if they are so, we have to update the "max".
-			if ($maxarr['maxtweets'] < $tweets) { $maxarr['maxtweets'] = $tweets; } 
-			if ($maxarr['maxfbooks'] < $fbooks) { $maxarr['maxfbooks'] = $fbooks; }
-
-			$counter++;
-		}
-
-		$now = time();
-
-		// now we do the calculations and write the stats back to db, post by post
-		foreach($results as $key => $value)
-		{
-			$tweetbuzz = unskew($value[0] / ($maxarr['maxtweets'] + 1));
-			$fbookbuzz = unskew($value[1] / ($maxarr['maxfbooks'] + 1));
-			$clickbuzz = unskew($value[2] / ($maxarr['totalclicks'] + 1));
-
-			// we do the calculations...
-			$spice = ($tweetbuzz * $tweetweight) + ($fbbuzz * $fbookweight) + ($clickbuzz * $clickweight);
-
-			// ...and put away our toys
-			
-	/*
-		get total clicks (all day) and max fb likes and tweets (per post)
-	*/				
-	public function getmaxstats()
-	{
-	
-		if(count($this->stats) == 0) {
-			
-			/* 24 * 60 * 60 seconds = 1 day */
-			$day = $this->now - 86400;
-			
-			$rs1 = $this->dbh->query("SELECT COUNT(*) FROM clicks WHERE "
-				."timestamp > :day", array(':day'=>$day));
-			$rs2 = $this->dbh->query("SELECT MAX(tweetCount), MAX(fbCount) FROM "
-				."posts WHERE serverTimestamp > :day", array(':day'=>$day));
-
-			if($rs1 && $rs2)
-			{
-				$arr1 = $rs1->fetch();
-				$arr2 = $rs2->fetch();
-
-				$this->stats['totalclicks']	= $arr1[0];
-				$this->stats['maxtweets']	= $arr2[0];
-				$this->stats['maxfbooks']	= $arr2[1];
-			}
-		}
-
-		return $this->stats;
-	}
-
-	/*
-		make sure values are always between 0 and 1
-	*/
-	public function unskew($x) {
-	
-		return ($x > 1) ? 1 : (($x < 0) ? 0 : $x);
-	} 
 	
 	/*
 		returns all the posts for a particular blogID
@@ -368,7 +325,7 @@ class Kottu
 		$order	= $pop ? 'serverTimestamp' : 'postBuzz';
 		
 		$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-			."p.serverTimestamp, p.postBuzz, b.blogName, p.thumbnail, "
+			."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
 			."p.postContent, p.fbCount, p.tweetCount FROM " 
 			."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
 			."p.blogID = :blogid ORDER BY $order DESC LIMIT $page, 20", 
@@ -384,11 +341,13 @@ class Kottu
 				$p['ts']	= $this->humants($row[3]);
 				$p['buzz']	= $this->chilies($row[4]);
 				$p['blog']	= $row[5];
-				$p['img']	= strlen($row[5]) > 0 ? $row[6] : config('basepath')
+				$p['bid']	= $row[6];
+				$p['img']	= strlen($row[7]) > 1 ? $row[7] : config('basepath')
 								.'/img/none.png';
-				$p['cont']	= $row[7];
-				$p['fb']	= $row[8];
-				$p['tw']	= $row[9];
+				$p['img']	= preg_replace('/&*(w=|h=)[0-9]+/', '', $p['img']);
+				$p['cont']	= $row[8];
+				$p['fb']	= $row[9];
+				$p['tw']	= $row[10];
 				
 				$posts[] 	= $p;
 			}
@@ -419,6 +378,7 @@ class Kottu
 		
 		return $blog;
 	}
+	
 	
 	/*
 		returns human readable timestamp 

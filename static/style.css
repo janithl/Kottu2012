@@ -24,8 +24,9 @@ The CSS, XHTML and design is released under GPL:
 http://www.opensource.org/licenses/gpl-3.0.html
 */
 
-
-body {
+html {
+	height: 100%;
+	width: 100%;
 	background: #DDD url('../img/bgstatic.png') repeat;
 	font-family: "Droid Sans", Tahoma, Arial, sans-serif;
 	font-size: 10pt;
@@ -152,6 +153,7 @@ header img {
     float: right;
     margin: 30px 0;
     width: 256px;
+	overflow: hidden;
 }
 
 /* footer */
@@ -177,6 +179,7 @@ footer {
 .timemenu {
 	margin: 0 auto;
 	padding: 6px 10px;
+	overflow: hidden;
 }
 
 .timemenu ul li {
@@ -189,7 +192,7 @@ footer {
 }
 
 .timemenu a {
-	padding: 8px;
+	padding: 10px;
 	margin: 0 -2px;
 }
 
@@ -205,17 +208,22 @@ footer {
 
 /* blog */
 
-.blog {
+.blog .postheader {
 	background:#333;
 	color: #FFF;
 }
 
-.blog a, .blog a:hover {
+.blog a {
 	color: #FFF;
 }
 
-.blog .timemenu {	
-	padding-bottom: 10px;
+.blog a:hover {
+	color: #FF003C;
+}
+
+.blog .timemenu {
+	background:#333;	
+	padding-bottom: 15px;
 }
 
 .blog .timemenu a:hover, .timemenu .selected a:hover {
@@ -264,20 +272,24 @@ article {
 	border-radius: 8px;
 	margin: 30px 0;
 	display: block;
+	overflow: hidden;
 }
 
 .postheader {
 	padding: 5px 10px;
+	overflow: hidden;
 }
 
 .postcont {
 	min-height: 100px;
 	padding: 10px;
+	text-align: justify;
+	overflow: hidden;
 }
 
 .thumbnail {
 	float:left;
-	padding-right: 20px;
+	padding: 5px 20px 5px 0;
 }
 
 .postfooter {
@@ -306,7 +318,7 @@ article {
 	color: #FFFFFF;
 	display: inline-block;
 	padding: 6px 12px 6px 28px;
-	max-width: 64px;
+	max-width: 70px;
 	margin-right: 10px;
 }
 
@@ -338,15 +350,33 @@ article {
 
 .widgetcont {
 	padding: 8px;
+	text-align: justify;
 }
 
 .widgetcont ul li {
-	padding: 8px 0;
+	padding: 6px 0;
 }
 
 #encourage {
 	width: 240px;
 	height: 360px;
 	overflow: hidden;
+}
+
+.hotlink {
+	text-align: center;
+	margin: 20px 0;
+}
+
+.hotlink a {
+	background: #AB5;
+	padding:10px;
+	color:#FFF;
+	border-radius:6px;
+}
+
+.hotlink a:hover {
+	opacity: 0.9;
+	color:#FFF;
 }
 

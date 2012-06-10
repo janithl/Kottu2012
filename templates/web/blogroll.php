@@ -12,7 +12,7 @@
 	To add your (Sri Lankan) blog just email indi@indi.ca
 	<ul>
 <?php foreach($this->blogs as $b): ?>
-	<li><a href="<?php echo $b['link']; ?>" target="_blank"><?php echo $b['name']; ?></a></li>
+	<li><a href="<?php echo config('basepath') , '/blog/' , $b['bid']; ?>"><?php echo $b['name']; ?></a></li>
 <?php endforeach; ?>
 	</ul>
 	</p>
@@ -26,10 +26,10 @@
 	<ul>
 <?php foreach($this->popblogs as $pb): ?>
 	<li>
-		<a href="<?php echo $pb['link']; ?>" target="_blank">
+		<a href="<?php echo config('basepath') , '/blog/' , $pb['bid']; ?>">
 		<strong><?php echo $pb['name']; ?></strong></a><br>
 		Last Updated: <?php echo $pb['lupdt']; ?><br>
-		Average: <img src="<?php echo config('basepath') . '/img/icons/' . $pb['buzz']; ?>"/>
+		Average: <img src="<?php echo config('basepath') , '/img/icons/' , $pb['buzz']; ?>"/>
 	</li>
 <?php endforeach; ?>	
 	</ul>

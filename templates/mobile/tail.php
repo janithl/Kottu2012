@@ -2,9 +2,9 @@
 <div data-role="footer" data-id="mainfooter" data-position="fixed">
 	<div data-role="navbar" data-iconpos="top">
 		<ul>
-			<li><a href="<?php echo config('basepath') ?>/m/?hot=off" data-icon="forward">Recent</a></li>
-			<li><a href="<?php echo config('basepath') ?>/m/?hot=today" data-icon="star">Popular</a></li>
-			<li><a href="<?php echo config('basepath') ?>/m/search" data-icon="search">Search</a></li>
+			<li><a href="./?hot=off" data-icon="forward">Recent</a></li>
+			<li><a href="./?hot=today" data-icon="star">Popular</a></li>
+			<li><a href="./?search" data-icon="search">Search</a></li>
 			<li><a href="#settings" data-icon="gear">Settings</a></li>
 		</ul>
 	</div><!-- /navbar -->
@@ -12,7 +12,7 @@
 </div><!-- /page one -->
 
 
-<!-- Start of #settings page -->
+<!-- Start of second page -->
 <div data-role="page" id="settings" data-theme="c">
 
 	<div data-role="header">
@@ -20,7 +20,7 @@
 	</div><!-- /header -->
 
 	<div data-role="content" data-theme="c">	
-	<form action="<?php echo config('basepath') ?>/m/" method="get">
+	<form action="./" method="get">
 	
 		<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal" >
 			<legend>Select Language:</legend>
@@ -46,13 +46,16 @@
 			<label for="hot_month">This Month</label>
 		</fieldset>
 		
-		<p><br><br></p>
+		<p><br></p>
 
-		<a data-rel="back" href="#mainpage" data-mini="true" data-inline="true" 
+		<a data-rel="back" href="./#mainpage" data-mini="true" data-inline="true" 
 		data-direction="reverse" data-icon="arrow-l" data-role="button">Go back</a>		
-		<button type="submit" data-mini="true" data-inline="true" data-theme="b" data-icon="check">Submit</button>
+		<button type="submit" data-mini="true" data-inline="true" data-theme="b"
+		data-icon="check">Submit</button>
+		<br><br>
+		<a data-ajax="false" href="<?php echo config('basepath'); ?>/all/off">View Full Site</a>
 		
-		<p><br><br></p>
+		<p><br></p>
 		
 	</form>
 		
@@ -63,7 +66,7 @@
 		<ul>
 			<li><a href="#mainpage" data-icon="home">Home</a></li>
 			<li><a href="#aboutus" data-icon="plus">About Us</a></li>
-			<li><a href="<?php echo config('basepath') ?>/m/blogroll" data-icon="grid">Blogroll</a></li>
+			<li><a href="./?blogroll" data-icon="grid">Blogroll</a></li>
 			<li><a href="#settings" data-icon="gear">Settings</a></li>
 		</ul>
 	</div><!-- /navbar -->
@@ -71,7 +74,7 @@
 	
 </div><!-- /page two -->
 
-<!-- Start of #aboutus page -->
+<!-- Start of third page -->
 <div data-role="page" id="aboutus" data-theme="c">
 
 	<div data-role="header">
@@ -92,7 +95,7 @@
 	<p>To join just send a mail to <a href="mailto:indi@indi.ca">indi@indi.ca</a>. 
 	I’ll get around to a contact form someday.</p>
 	
-	<a href="#settings" data-mini="true" data-inline="true" 
+	<a href="./#settings" data-mini="true" data-inline="true" 
 		data-direction="reverse" data-icon="arrow-l" data-role="button">Go back</a>
 	</div><!-- /content -->
 
@@ -101,7 +104,7 @@
 		<ul>
 			<li><a href="#mainpage" data-icon="home">Home</a></li>
 			<li><a href="#aboutus" data-icon="plus">About Us</a></li>
-			<li><a href="<?php echo config('basepath') ?>/m/blogroll" data-icon="grid">Blogroll</a></li>
+			<li><a href="./?blogroll" data-icon="grid">Blogroll</a></li>
 			<li><a href="#settings" data-icon="gear">Settings</a></li>
 		</ul>
 	</div><!-- /navbar -->

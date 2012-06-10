@@ -34,6 +34,9 @@ class DBConn
 			die();    
 		}
 	}
+	
+	function begin()	{ $this->db->beginTransaction(); }
+	function commit()	{ $this->db->commit(); }
 
 	function query($sql, $params) {		
 		
