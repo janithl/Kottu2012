@@ -45,6 +45,8 @@
 	<a href="<?php echo config('basepath') . '/' . $this->lang . '/week/'; ?>">This Week</a></li>
 	<li <?php echo ($this->time == 'month') ? 'class="selected"' : ''?>>
 	<a href="<?php echo config('basepath') . '/' . $this->lang . '/month/'; ?>">This Month</a></li>
+	<li <?php echo ($this->time == 'all') ? 'class="selected"' : ''?>>
+	<a href="<?php echo config('basepath') . '/' . $this->lang . '/all/'; ?>">All Time</a></li>
 	</ul>
 	</div>
 	</article>

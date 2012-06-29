@@ -96,5 +96,14 @@ src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=m&layou
 	<div class="widgetcont">
 	<br>
 	</div>
+	
+<?php if($this->mainpage === true): ?>
+	<div class="widgetcont">
+	<br>
+	<div class="hotlink"><a href="<?php echo config('basepath') . '/feed/' . $this->lang . '/' . $this->time; ?>" 
+		title="Get the rss feed for the page/combination currently selected">grab page rss feed →</a></div>
+	<div class="clear"></div>
+	</div>
+<?php endif; ?>
 </div>
 

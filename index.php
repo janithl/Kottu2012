@@ -317,6 +317,7 @@ else {
 		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
 		$out->evillage	= $k->sidescroller();
 		$out->currentpage = "{$out->lang}/{$out->time}/";
+		$out->mainpage	= true;
 
 		$out->render('web/head.php');
 		$out->render('web/items.php');

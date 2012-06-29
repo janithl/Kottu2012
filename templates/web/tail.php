@@ -27,7 +27,7 @@ var sc_security="0af09d7d";
 <!-- End of StatCounter Code -->
 
 <script src="http://www.google-analytics.com/urchin.js" type="­tex­t/­javas­cript"></script>
-<script type="­tex­t/­javas­cript"  type="text/javascript" language="javascript">
+<script type="­tex­t/­javas­cript" language="javascript">
 _uacct = "UA-182033-5";
 urch­in­Track­er­();
 </script>

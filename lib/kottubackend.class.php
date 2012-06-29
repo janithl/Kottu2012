@@ -5,6 +5,8 @@
 
 	08/06/12	Started this [janith]
 	
+	28/06/12	Bugfixes, feedget algorithm refinement [janith]
+	
 */
 
 class KottuBackend
@@ -13,14 +15,12 @@ class KottuBackend
 	private $now;
 	private $stats;
 	private $fbapp;
-	private $newposts;
 
 	public function __construct() {
 	
 		$this->dbh = new DBConn();
 		$this->now = time();
 		$this->stats = array();
-		$this->newposts = array();
 	}
 	
 	/* 
@@ -147,7 +147,7 @@ class KottuBackend
 	*/
 	public function calculatespice() {
 	
-		/* import the Facebook library! */
+		/* import the facebook library! */
 		require('./lib/FacebookSDK/facebook.php');
 		
 		/* initialise FB app instance */
@@ -169,6 +169,8 @@ class KottuBackend
 			we update that when we mess with the post, ensuring a queue which 
 			continously feeds us the least recently polled posts
 		*/
+		$this->dbh->begin();
+					
 		$resultset = $this->dbh->query("SELECT postID, link FROM posts WHERE "
 		."serverTimestamp > :day ORDER BY api_ts LIMIT 15", array(':day'=>$day));
 		
@@ -203,8 +205,6 @@ class KottuBackend
 				back into the database
 			*/
 			
-			$this->dbh->begin();
-			
 			foreach($poststats as $id => $stats) {
 			
 				$twbuzz = $this->unskew($stats[0] / ($this->stats['maxtweets'] + 1));
@@ -217,7 +217,8 @@ class KottuBackend
 					
 				/* update stats */	
 				$this->updatestats($id, $spice, $stats[0], $stats[1]);
-				echo "Spice for post $id: $spice, {$stats[0]}, {$stats[1]}\n";
+				printf("Spice for post %d: %5.3f (%3d t, %3d f)\n", $id, 
+					$spice, $stats[0], $stats[1]);
 			}
 			
 			$this->dbh->commit();
@@ -258,12 +259,12 @@ class KottuBackend
 	}
 	
 	/*
-		Add post to array of new posts
+		Add post to database
 	*/
 	public function addnewpost($post) {
 		
 		/* if a post doesn't have a title, give it one */
-		if(strlen($post['title'] < 1)) { $post['title'] = "Untitled Post"; }
+		if(strlen($post['title']) < 1) { $post['title'] = "Untitled Post"; }
 
 		/* generate post thumbnail */
 		$post['thumb'] = $this->generatethumbnail($post['cont']);
@@ -291,31 +292,23 @@ class KottuBackend
 		else if(preg_match('/[\x{0B80}-\x{0BFF}]{3,5}/u', $post['cont'].$post['title'])) {
 			$post['lang']	= 'ta';
 		}
+		else if(preg_match('/[\x{0780}-\x{07BF}]{3,5}/u', $post['cont'].$post['title'])) {
+			$post['lang']	= 'dv';
+		}
 
-		/* put the post into list of new posts */
-		$this->newposts[] = $post;
-	}
-	
-	/*
-		Commit all new posts to the database
-	*/
-	public function commitallnewposts() {
-	
-		$this->dbh->begin();
-		foreach($this->newposts as $p) {
-			$this->dbh->query("INSERT INTO posts(postID, blogID, link, title, "
+		/* insert the post into database */
+		$this->dbh->query("INSERT INTO posts(postID, blogID, link, title, "
 			."postContent, serverTimestamp, thumbnail, language, tags) VALUES "
 			."(NULL, :bid, :link, :title, :content, :ts, :thumb, :lang, :tags)",
-			array(	':bid'		=> $p['bid'],
-					':link'		=> $p['link'],
-					':title'	=> $p['title'],
-					':content'	=> $p['cont'],
-					':ts'		=> $p['ts'],
-					':thumb'	=> $p['thumb'],
-					':lang'		=> $p['lang'],
-					':tags'		=> $p['tags']));
-		}
-		$this->dbh->commit();
+			array(	':bid'		=> $post['bid'],
+					':link'		=> $post['link'],
+					':title'	=> $post['title'],
+					':content'	=> $post['cont'],
+					':ts'		=> $post['ts'],
+					':thumb'	=> $post['thumb'],
+					':lang'		=> $post['lang'],
+					':tags'		=> $post['tags']));
+	
 	}
 	
 	/*
@@ -323,10 +316,12 @@ class KottuBackend
 	*/
 	public function feedget() {
 	
-		/* import simplepie/dom and hide the million errors that it throws */
+		/* import simplepie, dom library and hide the errors that it throws */
 		error_reporting(E_ERROR);
 		require('./lib/SimplePie/simplepie.inc');
 		require('./lib/simple_html_dom.php');
+		
+		$postadded = false;
 		
 		/*
 			we get 50 blogs - 30 that have updated in the last two weeks and 
@@ -335,21 +330,26 @@ class KottuBackend
 		$resultset = $this->dbh->query("(SELECT bid, blogRSS FROM blogs AS b, "
 						."posts as p WHERE p.blogid = b.bid GROUP BY blogid "
 						."HAVING MAX(serverTimestamp) > :twks ORDER BY "
-						."access_ts ASC LIMIT 30) UNION (SELECT bid, blogRSS "
+						."access_ts ASC LIMIT 20) UNION (SELECT bid, blogRSS "
 						."FROM blogs AS b, posts as p WHERE p.blogid = b.bid "
 						."GROUP BY blogid HAVING MAX(serverTimestamp) <= :twks "
-						."ORDER BY access_ts ASC LIMIT 20)", 
-						array(':twks' => $this->now - 1209600));
+						."ORDER BY access_ts ASC LIMIT 30) UNION (SELECT bid, "
+						."blogRSS FROM blogs ORDER BY access_ts ASC LIMIT 1)", 
+						array(':twks' => $this->now - 2419200));
 
 		if($resultset)	{
+		
+			$this->dbh->begin();
+			$items = 0;
 
-			while(($row = $resultset->fetch()) != false) {
+			while(($row = $resultset->fetch()) != false) {	
 			
+				$items++;
 				$blogid = $row[0];
 
 				/* update blog access timestamp */
 				$this->dbh->query("UPDATE blogs SET access_ts = :time WHERE "
-							."bid = :bid", array(':time'=>$now,':bid'=>$blogid));
+						."bid = :bid", array(':time'=>$this->now,':bid'=>$blogid));
 
 				/* thank god for simplepie */
 				$feed = new SimplePie();
@@ -391,18 +391,37 @@ class KottuBackend
 						/* add new post to array of new posts */
 						$this->addnewpost($post);
 						echo "Added new post: {$post['title']} ({$post['link']})\n";
+						$postadded = true;
 
 						/* and delete the object */
 						unset($post);
 					}
 				}
 
+				/* commit transaction to avoid losing data if we crash */
+				if($items >= 120) {
+					
+					$this->dbh->commit();
+					$this->dbh->begin();
+					$items = 0;
+				}
+				
 				$feed->__destruct();
 				unset($feed);
 			}
 			
-			/* commit all new posts to database */
-			$this->commitallnewposts();
+			$this->dbh->commit();
+			
+			/* clear the cache if new posts are added */
+			if($postadded) {
+			
+				$pages = array("_", "_all_off", "_ta_off", "_si_off", "_en_off"); 
+					
+				foreach ($pages as $f) {
+					unlink("./webcache/$f.html");
+					echo "deleted file $f.html\n";
+				}
+			}
 		}
 	}
 }
