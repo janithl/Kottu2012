@@ -19,6 +19,8 @@ require('./config.php');
 	08/06/12	Administration options / backend finally added :P [janith]
 	
 	09/06/12	Added tags, cleaned up navigation code etc. [janith]
+	
+	21/08/12	Adding admin backend [janith]
 */
 
 $path		= explode('/', $_SERVER['REQUEST_URI']);
@@ -30,7 +32,7 @@ $cachefile	= "./webcache/" . implode('_', $path) . ".html";
 /* serve from the cache if it is younger than $cachetime */
 if(file_exists($cachefile) && (time() - $cachetime < filemtime($cachefile))) {
 
-	include($cachefile);
+	readfile($cachefile);
 	echo "<!-- Served with love from the Kottu cache. Page generated " ,
 	(time() - filemtime($cachefile)) , " seconds ago. -->\n";
 }
@@ -38,12 +40,15 @@ else {
 
 	require('./lib/template.class.php');
 	require('./lib/dbconn.class.php');
+	require('./lib/db.class.php');
 	require('./lib/kottu.class.php');
 
 	$k		= new Kottu();
 	$out	= new Template();
 	$out->toplink		= 'off';
 	$out->currentpage	= 'all/off/';
+	
+	$janithstart = microtime(true);
 
 	if($path[$i] == 'go') {
 
@@ -59,20 +64,26 @@ else {
 			header('location: ' . config('basepath'));
 		}
 	}
-	elseif($path[$i] == 'admin' && sha1($path[$i + 2]) === config('besecret')) {
+	elseif($path[$i] == 'admin') {
 		
-		if($path[$i + 1] == 'cacheclear' || $path[$i + 1] == 'feedget' ||
-			$path[$i + 1] == 'calculatespice') {
+		if(($path[$i + 1] == 'cacheclear' || $path[$i + 1] == 'feedget' ||
+			$path[$i + 1] == 'calculatespice') && sha1($path[$i + 2]) === 
+			config('besecret')) {
 			
 			require('./lib/kottubackend.class.php');
 			$kbe = new KottuBackend();
 			
 			/* callback */
-			call_user_func(array($kbe, $path[$i +1]));
+			call_user_func(array($kbe, $path[$i + 1]));
 		}
 		else {
 		
-			include('./templates/web/error.php');
+			unset($k);
+		
+			require('./lib/kottuadmin.class.php');
+			$ka = new KottuAdmin();
+			
+			$ka->route($path[$i + 1], $out);
 		}
 	}
 	elseif($path[$i] == 'blogroll') {
@@ -297,45 +308,77 @@ else {
 		/* send buffer contents to browser */
 		ob_end_flush();
 	}
-	elseif($path[$i] == '' || preg_match('/^(all|en|si|ta)$/', $path[$i]) && 
-		(!isset($path[$i+1]) || $path[$i+1] == '' || 
-		preg_match('/^(off|today|week|month|all)$/', $path[$i+1]))) {
-	
-		/* start output buffer */
-		ob_start();
-
-		/* Normal Kottu website */
-
-		$out->lang = isset($path[$i]) && strlen($path[$i]) ? $path[$i] : 'all';
-		$out->time = isset($path[$i + 1]) && strlen($path[$i + 1]) ? $path[$i + 1] : 'off';
-		$out->page = isset($path[$i + 2]) && strlen($path[$i + 2]) ? $path[$i + 2] : 0;
-		
-		$out->title =  'Kottu: ' . titlemaker($out->lang, $out->time, $out->page + 1);
-		$out->toplink	= $out->time;
-		$out->numblogs	= $k->fetchnumblogs();
-		$out->posts		= $k->fetchallposts($out->lang, $out->time, $out->page);
-		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-		$out->evillage	= $k->sidescroller();
-		$out->currentpage = "{$out->lang}/{$out->time}/";
-		$out->mainpage	= true;
-
-		$out->render('web/head.php');
-		$out->render('web/items.php');
-		$out->render('web/sidebar.php');
-		$out->render('web/tail.php');
-		
-		/* save contents of buffer into cache file */
-		$fp = fopen($cachefile, 'w'); 
-		fwrite($fp, ob_get_contents());
-		fclose($fp); 
-
-		/* send buffer contents to browser */
-		ob_end_flush();
-	}
 	else {
+	
+		switch($path[$i]) {
+		
+			case '':
+			case 'all':
+			case 'en':
+			case 'si':
+			case 'ta':
+			
+				$subpath = isset($path[$i+1]) ? $path[$i+1] : ''; 
+		
+				switch($subpath) {
+				
+					case '':
+					case 'off':
+					case 'today':
+					case 'week':
+					case 'month':
+					case 'all':
+					
+						break;
+						
+					default:
+						
+						include('./templates/web/error.php');
+						die();
+				}	
+	
+				/* start output buffer */
+				ob_start();
 
-		include('./templates/web/error.php');
+				/* Normal Kottu website */
+
+				$out->lang = isset($path[$i]) && strlen($path[$i]) ? $path[$i] : 'all';
+				$out->time = isset($path[$i + 1]) && strlen($path[$i + 1]) ? $path[$i + 1] : 'off';
+				$out->page = isset($path[$i + 2]) && strlen($path[$i + 2]) ? $path[$i + 2] : 0;
+		
+				$out->title =  'Kottu: ' . titlemaker($out->lang, $out->time, $out->page + 1);
+				$out->toplink	= $out->time;
+				$out->numblogs	= $k->fetchnumblogs();
+				$out->posts		= $k->fetchallposts($out->lang, $out->time, $out->page);
+				$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
+				$out->evillage	= $k->sidescroller();
+				$out->currentpage = "{$out->lang}/{$out->time}/";
+				$out->mainpage	= true;
+
+				$out->render('web/head.php');
+				$out->render('web/items.php');
+				$out->render('web/sidebar.php');
+				$out->render('web/tail.php');
+		
+				/* save contents of buffer into cache file */
+				$fp = fopen($cachefile, 'w'); 
+				fwrite($fp, ob_get_contents());
+				fclose($fp); 
+
+				/* send buffer contents to browser */
+				ob_end_flush();
+				break;
+				
+			default:
+
+				include('./templates/web/error.php');
+				break;
+		}
 	}
+	
+	$janithend = microtime(true);
+	
+	echo "<!-- Page generated in ", number_format($janithend - $janithstart, 3) , " seconds -->";
 }
 
 function titlemaker($lang='all', $time='off', $page=1) {

@@ -29,12 +29,13 @@
 	<div class="postfooter" style="clear:both">
 		<span class="timestamp">Last Updated: <?php echo $this->blog['ts']; ?></span>
 		<span class="timestamp"><?php echo $this->blog['count']; ?> posts on Kottu</span>
-		<span class="timestamp">Average Spice: <img src="<?php echo config('basepath') . '/img/icons/' . $this->blog['buzz']; ?>"/></span>
+		<span class="timestamp">Average Spice: <img title="Average post popularity is <?php echo $this->blog['buzz']; ?> chilies"
+		src="<?php echo config('basepath') , '/img/icons/chili' , $this->blog['buzz']; ?>.png" alt="<?php echo $this->blog['buzz']; ?> chilies"/></span>
 	</div>
 	</article>
 <?php endif; ?>
 
-<?php if($this->time == 'today' || $this->time == 'week' || $this->time == 'month'): ?>
+<?php if($this->time == 'today' || $this->time == 'week' || $this->time == 'month' || $this->time == 'all'): ?>
 	<article class="post">
 	<div class="timemenu">
 	<ul>
@@ -59,7 +60,7 @@
 	<div class="postheader">
 		<h2 class="posttitle">
 		<a  target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $i['id'] . '&url=' . $i['link']; ?>" 
-		name="<?php echo $i['id']; ?>"><?php echo $i['title']; ?></a>
+		id="<?php echo $i['id']; ?>"><?php echo $i['title']; ?></a>
 		</h2>
 		<a href="<?php echo config('basepath') . '/blog/' . $i['bid']; ?>"><?php echo $i['blog']; ?></a> 
 	</div>
@@ -67,7 +68,7 @@
 	<div class="postcont">
 			<p>
 			<?php if($i['img'] != config('basepath') .'/img/none.png'): ?>
-			<span class="thumbnail"><img src="<?php echo config('basepath') . '/img/?q=85&src=' . $i['img']; ?>"/></span>
+			<span class="thumbnail"><img alt="<?php echo $i['title']; ?>" src="<?php echo config('basepath') . '/img/?q=85&src=' . $i['img']; ?>"/></span>
 			<?php endif; ?>
 			<?php echo strip_tags(str_replace("\n", " ", $i['cont'])); ?>
 			</p>
@@ -82,7 +83,8 @@
 		<li><a href="#<?php echo $i['id']; ?>" onClick="window.open('https://twitter.com/intent/tweet?source=tweetbutton&url=<?php echo $i['link']; ?>', 
 		'Share on Twitter', 'toolbar=no, scrollbars=yes, width=500, height=400');" title="This post was tweeted <?php echo $i['tw']; ?> time(s)" 
 		class="share tw"><span>Tweets: <?php echo $i['tw']; ?></span></a></li>						
-		<li><span class="chili"><img src="<?php echo config('basepath') . '/img/icons/' . $i['buzz']; ?>"/></span></li>
+		<li><span class="chili"><img title="The post popularity is <?php echo $i['buzz']; ?> chilies"
+		src="<?php echo config('basepath') , '/img/icons/chili' , $i['buzz']; ?>.png" alt="<?php echo $i['buzz']; ?> chilies"/></span></li>
 	</ul>
 	</div>
 	</article>

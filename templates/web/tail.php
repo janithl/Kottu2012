@@ -14,20 +14,19 @@
 </div><!-- end page -->
 
 <!-- Start of StatCounter Code -->
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 var sc_project=610934; 
 var sc_invisible=0; 
 var sc_partition=4; 
 var sc_security="0af09d7d"; 
 </script>
 
-<script type="text/javascript" language="javascript" src="http://www.statcounter.com/counter/counter.js">
-</script>
+<script type="text/javascript" src="http://www.statcounter.com/counter/counter.js"></script>
 
 <!-- End of StatCounter Code -->
 
-<script src="http://www.google-analytics.com/urchin.js" type="­tex­t/­javas­cript"></script>
-<script type="­tex­t/­javas­cript" language="javascript">
+<script type="­tex­t/­javas­cript" src="http://www.google-analytics.com/urchin.js"></script>
+<script type="­tex­t/­javas­cript">
 _uacct = "UA-182033-5";
 urch­in­Track­er­();
 </script>

@@ -5,9 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<title>Kottu: Page Not Found</title>
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/style.css">
+	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/css/style.css">
 	<!--[if lt IE 9]>
-	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/ie8.css">
+	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/css/ie8.css">
 	<![endif]-->
 	<link rel="icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
@@ -45,12 +45,11 @@
 	<img src="<?php echo config('basepath'); ?>/img/bpf.png"/><br>
 	
 	The page that you were looking for could not be found. Would you like to search for it instead?<br><br>
-	
+	</p>
 	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'); ?>/all/search/" >
 	<input tabindex=1 type="text" class="searchbox" name="q" id="q" />
 	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
 	</form>
-	</p>
 	<br>
 	</div>
 	
@@ -73,20 +72,20 @@
 </div><!-- end page -->
 
 <!-- Start of StatCounter Code -->
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 var sc_project=610934; 
 var sc_invisible=0; 
 var sc_partition=4; 
 var sc_security="0af09d7d"; 
 </script>
 
-<script type="text/javascript" language="javascript" src="http://www.statcounter.com/counter/counter.js">
+<script type="text/javascript" src="http://www.statcounter.com/counter/counter.js">
 </script>
 
 <!-- End of StatCounter Code -->
 
 <script src="http://www.google-analytics.com/urchin.js" type="­tex­t/­javas­cript"></script>
-<script type="­tex­t/­javas­cript"  type="text/javascript" language="javascript">
+<script type="­tex­t/­javas­cript">
 _uacct = "UA-182033-5";
 urch­in­Track­er­();
 </script>

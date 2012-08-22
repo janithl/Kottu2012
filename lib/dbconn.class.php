@@ -21,13 +21,14 @@ class DBConn
 		}
 	}
 
-	function connect() {
+	public function connect() {
 	
 		$dsn = 'mysql:host='.config('dbhost').';dbname='.config('dbname');
 
 	    try {
 			$this->db = new PDO($dsn, config('dbuser'), config('dbpwd'));
 			$this->db->exec("set names utf8");
+			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		} 
 		catch (PDOException $e) {
 			print "Database connection failed: {$e->getMessage()} <br/>";
@@ -35,10 +36,10 @@ class DBConn
 		}
 	}
 	
-	function begin()	{ $this->db->beginTransaction(); }
-	function commit()	{ $this->db->commit(); }
+	public function begin()		{ $this->db->beginTransaction(); }
+	public function commit()	{ $this->db->commit(); }
 
-	function query($sql, $params) {		
+	public function query($sql, $params = array()) {		
 		
 		$statement = $this->db->prepare($sql);
 	    $result = $statement->execute($params);

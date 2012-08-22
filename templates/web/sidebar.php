@@ -3,7 +3,7 @@
 	<div class="widgetcont">
 	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'),'/',$this->lang; ?>/search/" >
 	<input tabindex=1 type="text" class="searchbox" value="<?php echo $this->str; ?>" name="q" id="q" />
-	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
+	<input tabindex=2 type="submit" class="searchsubmit" value="Search" title="Search" />
 	</form>
 	</div>
 	
@@ -63,7 +63,7 @@
 	</li>
 <?php endforeach; ?>
 	</ul>
-	<div class="hotlink"><a href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">read more →</a></div>
+	<div class="hotlink"><a title="View posts listed by popularity" href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">read more →</a></div>
 	</div>
 	
 	<div class="widgetheader">Sri Lanka on Flickr</div>

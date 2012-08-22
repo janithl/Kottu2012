@@ -29,7 +29,8 @@
 		<a href="<?php echo config('basepath') , '/blog/' , $pb['bid']; ?>">
 		<strong><?php echo $pb['name']; ?></strong></a><br>
 		Last Updated: <?php echo $pb['lupdt']; ?><br>
-		Average: <img src="<?php echo config('basepath') , '/img/icons/' , $pb['buzz']; ?>"/>
+		Average: <img title="Average post popularity is <?php echo $pb['buzz']; ?> chilies"
+		src="<?php echo config('basepath') , '/img/icons/chili' , $pb['buzz']; ?>.png" alt="<?php echo $pb['buzz']; ?> chilies"/>
 	</li>
 <?php endforeach; ?>	
 	</ul>

@@ -79,8 +79,8 @@ SimplePie, Simple HTML DOM and Facebook libraries.
 This folder contains the image resources used by Kottu, the icon files, and
 the Timthumb cache.
 
-* `./templates` contains all the web, rss and mobile templates, which are filled
-with data and rendered.
+* `./templates` contains all the web, admin panel, rss and mobile templates, 
+which are filled with data and rendered.
 
 * `./webcache` contains cached web pages (Kottu cache).
 
@@ -102,6 +102,9 @@ How to set up Kottu 2012
 * Create a Facebook app (to get Facebook share/like information for posts) and 
 copy the app ID and secret into `config.php`
 
+* You can log in to the admin panel at http://basepath/admin using the default 
+username `indi` and password `indi`. *Important!* Please change these values 
+in the `users` table to ensure security.
 
 
 cronjobs

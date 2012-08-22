@@ -27,7 +27,7 @@ http://www.opensource.org/licenses/gpl-3.0.html
 html {
 	height: 100%;
 	width: 100%;
-	background: #DDD url('../img/bgstatic.png') repeat;
+	background: #DDD url('../../img/bgstatic.png') repeat;
 	font-family: "Droid Sans", Tahoma, Arial, sans-serif;
 	font-size: 10pt;
 	line-height: 1.6;
@@ -100,7 +100,7 @@ header img {
 
 .mainmenu {
 	margin: 0 auto;
-	width: 1000px;
+	width: 940px;
 }
 	
 .mainmenu ul li {height: 100%;
@@ -328,11 +328,11 @@ article {
 }
 
 .tw {
-	background: #3DC7F4 url('../img/icons/tw.png') no-repeat;
+	background: #3DC7F4 url('../../img/icons/tw.png') no-repeat;
 }
 
 .fb {
-	background: #3B5998 url('../img/icons/fb.png') no-repeat;
+	background: #3B5998 url('../../img/icons/fb.png') no-repeat;
 }
 
 /* sidebar */
@@ -394,3 +394,4 @@ article {
 .tagsize3 {
 	font-size: 160%;
 }
+

@@ -11,7 +11,7 @@
 			<p><?php echo $i['blog']; ?> <span class="timestamp">
 				(<?php echo $i['ts']; ?>)</span>
 			</p>
-			<p><img src="<?php echo config('basepath') . '/img/icons/' . $i['buzz']; ?>"/></p>
+			<p><img src="<?php echo config('basepath') . '/img/icons/chili' . $i['buzz']; ?>.png"/></p>
 			</a>
 		</li>
 		<?php endforeach ?>

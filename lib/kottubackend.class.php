@@ -5,8 +5,6 @@
 
 	08/06/12	Started this [janith]
 	
-	28/06/12	Bugfixes, feedget algorithm refinement [janith]
-	
 */
 
 class KottuBackend
@@ -18,7 +16,7 @@ class KottuBackend
 
 	public function __construct() {
 	
-		$this->dbh = new DBConn();
+		$this->dbh = DB::connect();
 		$this->now = time();
 		$this->stats = array();
 	}
@@ -59,8 +57,8 @@ class KottuBackend
 		
 		if($json) {
 		
-			$twitter = json_decode($json);
-			$tweetcount = $twitter->{'count'};
+			$twitter = json_decode($json, true);
+			$tweetcount = $twitter['count'];
 		}
 
 		return $tweetcount;
@@ -72,19 +70,12 @@ class KottuBackend
 	public function getfbcount($url) {
 		$fbcount = 0;
 
-		try {
+		$json = @file_get_contents("http://graph.facebook.com/?ids=$url");
 		
-			$f = "SELECT share_count, like_count FROM link_stat WHERE url=\"$url\"";
-			$r = $this->fbapp->api(array('method' => 'fql.query','query' => $f,));
-		}
-		catch (FacebookApiException $e) {
+		if($json) {
 		
-			echo $e;
-			$r = null;
-		}
-
-		if($r != null) {
-			$fbcount = $r['0']['share_count'] + $r['0']['like_count'];
+			$fb = json_decode($json, true);
+			$fbcount = $fb[$url]['shares'];
 		}
 
 		return $fbcount;
@@ -147,14 +138,6 @@ class KottuBackend
 	*/
 	public function calculatespice() {
 	
-		/* import the facebook library! */
-		require('./lib/FacebookSDK/facebook.php');
-		
-		/* initialise FB app instance */
-		$this->fbapp = new Facebook(array(
-			'appId'  => config('fbappid'),
-			'secret' => config('fbappkey'),));
-	
 		/*	24 * 60 * 60 seconds = 1 day */
 		$day = $this->now - 86400;
 		
@@ -171,8 +154,12 @@ class KottuBackend
 		*/
 		$this->dbh->begin();
 					
-		$resultset = $this->dbh->query("SELECT postID, link FROM posts WHERE "
-		."serverTimestamp > :day ORDER BY api_ts LIMIT 15", array(':day'=>$day));
+		$resultset = $this->dbh->query("(SELECT postID, link FROM posts AS p, "
+		."blogs AS b WHERE b.bid = p.blogid AND b.active = 1 AND "
+		."serverTimestamp > :day ORDER BY api_ts LIMIT 15) UNION "
+		."(SELECT postID, link FROM posts AS p, blogs AS b WHERE "
+		."b.bid = p.blogid AND b.active = 1 AND api_ts = 0 LIMIT 3)", 
+		array(':day' => $day));
 		
 		if($resultset) {
 		
@@ -230,10 +217,10 @@ class KottuBackend
 	*/
 	public function postnotindb($url) {
 	
-		$resultset = $this->dbh->query("SELECT * FROM posts WHERE link LIKE :url", 
+		$res = $this->dbh->query("SELECT * FROM posts WHERE link LIKE :url", 
 						array(':url' => $url));
 		
-		return (!$resultset || $resultset->fetch() == false);
+		return (!$res || $res->fetch() == false);
 	}
 	
 	/*
@@ -273,7 +260,7 @@ class KottuBackend
 		$post['cont'] = strip_tags($post['cont']);
 
 		/* removing those stupid multiple spaces */
-		$post['cont'] = preg_replace("/(&nbsp;|\s|&nbsp;\s)+/", ' ', $post['cont']);
+		$post['cont'] = preg_replace("/(&nbsp;|\s)+/", ' ', $post['cont']);
 
 		/* summary generator */
 		if(strlen($post['cont']) > 400) {
@@ -328,14 +315,16 @@ class KottuBackend
 		 	20 that have not - sorted on least recently accessed
 		 */
 		$resultset = $this->dbh->query("(SELECT bid, blogRSS FROM blogs AS b, "
-						."posts as p WHERE p.blogid = b.bid GROUP BY blogid "
-						."HAVING MAX(serverTimestamp) > :twks ORDER BY "
-						."access_ts ASC LIMIT 20) UNION (SELECT bid, blogRSS "
-						."FROM blogs AS b, posts as p WHERE p.blogid = b.bid "
-						."GROUP BY blogid HAVING MAX(serverTimestamp) <= :twks "
-						."ORDER BY access_ts ASC LIMIT 30) UNION (SELECT bid, "
-						."blogRSS FROM blogs ORDER BY access_ts ASC LIMIT 1)", 
-						array(':twks' => $this->now - 2419200));
+						."posts as p WHERE b.active = 1 AND p.blogid = b.bid "
+						."GROUP BY blogid HAVING MAX(serverTimestamp) > :twk1 "
+						."ORDER BY access_ts ASC LIMIT 20) UNION (SELECT bid, "
+						."blogRSS FROM blogs AS b, posts as p WHERE "
+						."p.blogid = b.bid GROUP BY blogid HAVING "
+						."MAX(serverTimestamp) <= :twk2 ORDER BY access_ts ASC "
+						."LIMIT 30) UNION (SELECT bid, blogRSS FROM blogs "
+						."WHERE active = 1 ORDER BY access_ts ASC LIMIT 1)", 
+						array(':twk1' => $this->now - 2419200,
+						':twk2' => $this->now - 2419200));
 
 		if($resultset)	{
 		
@@ -349,7 +338,7 @@ class KottuBackend
 
 				/* update blog access timestamp */
 				$this->dbh->query("UPDATE blogs SET access_ts = :time WHERE "
-						."bid = :bid", array(':time'=>$this->now,':bid'=>$blogid));
+					."bid = :bid", array(':time'=>$this->now,':bid'=>$blogid));
 
 				/* thank god for simplepie */
 				$feed = new SimplePie();

@@ -15,7 +15,7 @@ class Kottu
 
 	public function __construct() {
 	
-		$this->dbh = new DBConn();
+		$this->dbh = DB::connect();
 		$this->now = time();
 	}
 
@@ -32,11 +32,13 @@ class Kottu
 		
 		if($time === 'off') {
 			
-			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
-				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
-				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang ORDER BY "
-				."p.serverTimestamp DESC LIMIT $page, 20", array(':lang'=>$lang));
+			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
+				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
+				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
+				."p.blogID AND p.language LIKE :lang ORDER BY "
+				."p.serverTimestamp DESC LIMIT :page, 20", 
+				array(':lang' => $lang, ':page' => $page));
 		}
 		else {
 		
@@ -46,12 +48,13 @@ class Kottu
 			elseif($time == 'week')	{ $day = $this->now - (7 * 24 * 60 * 60); }
 			elseif($time == 'month'){ $day = $this->now - (30 * 24 * 60 * 60); }
 
-			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
-				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs "
-				."AS b WHERE b.bid = p.blogID AND p.language LIKE :lang AND "
-				."serverTimestamp > :time ORDER BY postBuzz DESC LIMIT $page, 20", 
-				array(':lang'=>$lang, ':time'=>$day));
+			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
+				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
+				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
+				."p.blogID AND p.language LIKE :lang AND serverTimestamp > "
+				.":time ORDER BY postBuzz DESC LIMIT :page, 20", 
+				array(':lang' => $lang, ':time' => $day, ':page' => $page));
 
 		}
 
@@ -156,12 +159,13 @@ class Kottu
 			
 				$tagtext = '.*(' . implode('|',$tagarray[$tags]) . ').*';
 				
-				$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-				."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
-				."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, " 
-				."blogs AS b WHERE b.bid = p.blogID AND language LIKE :lang AND "
-				."tags RLIKE :tags ORDER BY serverTimestamp DESC LIMIT $page, 20", 
-				array(':lang' => $lang, ':tags' => $tagtext));
+				$resultset = $this->dbh->query("SELECT p.postID, p.title, "
+				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
+				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
+				."p.blogID AND language LIKE :lang AND tags RLIKE :tags "
+				."ORDER BY serverTimestamp DESC LIMIT :limit, 20", array(
+				':lang' => $lang, ':tags' => $tagtext, ':limit' => $page));
 			}
 			else {
 			
@@ -173,10 +177,11 @@ class Kottu
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
 			."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
 			."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, "
-			."blogs AS b WHERE b.bid = p.blogID AND language LIKE :lang AND "
-			."(p.postContent LIKE :string OR p.title LIKE :string OR b.blogName "
-			."LIKE :string) ORDER BY serverTimestamp DESC LIMIT $page, 20", 
-			array(':lang' => $lang, ':string' => $str));
+			."blogs AS b WHERE b.active = 1 AND b.bid = p.blogID AND language "
+			."LIKE :lang AND (p.postContent LIKE :str1 OR p.title LIKE "
+			.":str2 OR b.blogName LIKE :str3) ORDER BY serverTimestamp "
+			."DESC LIMIT :limit, 20", array(':lang' => $lang, ':str1' => $str,
+			':str2' => $str, ':str3' => $str, ':limit' => $page));
 		}
 		
 		if($resultset) {
@@ -209,7 +214,8 @@ class Kottu
 	*/
 	public function fetchnumblogs() {
 	
-		$resultset = $this->dbh->query("SELECT COUNT(*) FROM blogs", array());
+		$resultset = $this->dbh->query("SELECT COUNT(*) FROM blogs WHERE "
+		."active = 1");
 		
 		if($resultset && ($row = $resultset->fetch()) != false) {
 			
@@ -225,7 +231,7 @@ class Kottu
 		$blogs = array();
 		
 		$resultset = $this->dbh->query("SELECT bid, blogName FROM blogs "
-			."ORDER BY blogName", array());
+		."WHERE active = 1 ORDER BY blogName");
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
@@ -247,11 +253,11 @@ class Kottu
 	
 		$blogs = array();
 		
-		$resultset = $this->dbh->query("SELECT bid, blogName, "
-			."AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, posts AS p "
-			."WHERE b.bid = p.blogID AND p.serverTimestamp > :month GROUP BY "
-			."b.bid HAVING COUNT(p.postBuzz) >= 3 ORDER BY AVG(postBuzz) DESC "
-			."LIMIT 20", array(':month'=>($this->now - 2592000)));
+		$resultset = $this->dbh->query("SELECT bid, blogName, AVG(postBuzz), "
+		."MAX(serverTimestamp) FROM blogs AS b, posts AS p WHERE b.active = 1 "
+		."AND b.bid = p.blogID AND p.serverTimestamp > :month GROUP BY b.bid "
+		."HAVING COUNT(p.postBuzz) >= 3 ORDER BY AVG(postBuzz) DESC LIMIT 20", 
+		array(':month'=>($this->now - 2592000)));
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
@@ -276,9 +282,9 @@ class Kottu
 		$posts = array();
 		
 		$resultset = $this->dbh->query("SELECT p.link, p.title, "
-			."p.serverTimestamp, p.postContent FROM posts AS p WHERE p.blogid "
-			."IN (11407, 11403, 10419, 10278, 11411, 11412, 11413, 11414, 11431) "
-			."ORDER BY serverTimestamp DESC LIMIT 5", array());
+		."p.serverTimestamp, p.postContent FROM posts AS p WHERE p.blogid "
+		."IN (11407, 11403, 10419, 10278, 11411, 11412, 11413, 11414, 11431) "
+		."ORDER BY serverTimestamp DESC LIMIT 5", array());
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
@@ -301,18 +307,11 @@ class Kottu
 		If there is a click from this ip address within the last 12 hours,
 		we won't register a new click. btw, 12 hrs = 43200 seconds
 	*/
-	function insertclick($ip, $pid)
+	public function insertclick($ip, $pid)
 	{
-		$resultset = $this->dbh->query("SELECT MAX(timestamp) FROM clicks WHERE "
-			."timestamp > :hrs AND ip = :ip AND pid = :pid", 
-			array(':ip'=>$ip, ':pid'=>$postid, ':hrs'=>($this->now - 43200))); 
-
-		if($resultset && $resultset->fetch() == false)
-		{
-			$resultset = $this->dbh->query("INSERT INTO clicks(ip, pid, "
-				."timestamp) VALUES (:ip, :pid, :ts)", array(':ip'=>$ipadr, 
-				':pid'=>$pid, ':ts'=>$this->now));
-		}	
+		$this->dbh->query("INSERT INTO clicks(pid, ip, timestamp, hourstamp) "
+			."VALUES(:pid, :ip, :ts, :hs)", array(':pid' => $pid, ':ip' => $ip, 
+			':ts' => $this->now, ':hs' => (int)($this->now / 3600)));
 	}
 	
 	/*
@@ -325,11 +324,11 @@ class Kottu
 		$order	= $pop ? 'serverTimestamp' : 'postBuzz';
 		
 		$resultset = $this->dbh->query("SELECT p.postID, p.title, p.link, "
-			."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
-			."p.postContent, p.fbCount, p.tweetCount FROM " 
-			."posts AS p, blogs AS b WHERE b.bid = p.blogID AND "
-			."p.blogID = :blogid ORDER BY $order DESC LIMIT $page, 20", 
-			array(':blogid'=>$blogid));
+		."p.serverTimestamp, p.postBuzz, b.blogName, b.bid, p.thumbnail, "
+		."p.postContent, p.fbCount, p.tweetCount FROM posts AS p, blogs AS b "
+		."WHERE b.active = 1 AND b.bid = p.blogID AND p.blogID = :blogid "
+		."ORDER BY ".$order." DESC LIMIT :limit, 20", 
+		array(':blogid' => $blogid, ':limit' => $page));
 		
 		if($resultset) {
 		
@@ -363,9 +362,10 @@ class Kottu
 	
 		$blog	= array();
 		
-		$resultset = $this->dbh->query("SELECT blogName, blogURL, COUNT(postID), "
-			."AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, posts AS p "
-			."WHERE b.bid = p.blogID AND b.bid = :id", array(':id'=>$blogid));
+		$resultset = $this->dbh->query("SELECT blogName, blogURL, "
+		."COUNT(postID), AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, "
+		."posts AS p WHERE b.active = 1 AND b.bid = p.blogID AND b.bid = :id", 
+		array(':id'=>$blogid));
 		
 		if($resultset && (($row = $resultset->fetch()) != false)) {
 			
@@ -418,11 +418,11 @@ class Kottu
 		$buzz = (int)($buzz * 100);
 		$out = '';
 
-		if($buzz <= 1)		{ $out = 'chili1.png'; }
-		elseif($buzz <= 15)	{ $out = 'chili2.png'; }
-		elseif($buzz <= 35)	{ $out = 'chili3.png'; }
-		elseif($buzz <= 55)	{ $out = 'chili4.png'; }
-		else				{ $out = 'chili5.png'; }
+		if($buzz <= 1)		{ $out = 1; }
+		elseif($buzz <= 15)	{ $out = 2; }
+		elseif($buzz <= 35)	{ $out = 3; }
+		elseif($buzz <= 55)	{ $out = 4; }
+		else				{ $out = 5; }
 	
 		return $out;
 	}

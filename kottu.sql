@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `blogs` (
   `blogName` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
   `blogURL` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
   `blogRSS` varchar(128) character set utf8 collate utf8_unicode_ci NOT NULL,
-  `access_ts` int(11) NOT NULL default '1303306000',
+  `access_ts` int(11) NOT NULL default '0',
+  `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`bid`),
   UNIQUE KEY `blogURL` (`blogURL`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11664 ;
@@ -46,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `clicks` (
   `pid` int(11) NOT NULL,
   `ip` varchar(16) NOT NULL,
   `timestamp` int(11) NOT NULL,
-  PRIMARY KEY  (`pid`,`ip`,`timestamp`)
+  `hourstamp` int(11) NOT NULL,
+  PRIMARY KEY  (`pid`,`ip`,`hourstamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -75,6 +77,43 @@ CREATE TABLE IF NOT EXISTS `posts` (
   KEY `serverTimestamp` (`serverTimestamp`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=196125 ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `userid` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
+  `hash` varchar(64) NOT NULL,
+  PRIMARY KEY  (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Insert default user into `users`
+--
+
+INSERT INTO `kottu`.`users` (`userid` ,`hash`)
+VALUES ('indi', SHA1( 'indi' ));
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logins`
+--
+
+CREATE TABLE IF NOT EXISTS `logins` (
+  `id` int(11) NOT NULL auto_increment,
+  `user` varchar(64) character set utf8 collate utf8_unicode_ci default NULL,
+  `ipaddr` varchar(32) NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  `useragent` varchar(196) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1012 ;
+
+
+
 --
 -- Constraints for dumped tables
 --
@@ -90,6 +129,12 @@ ALTER TABLE `clicks`
 --
 ALTER TABLE `posts`
   ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`blogID`) REFERENCES `blogs` (`bid`) ON DELETE CASCADE ON UPDATE CASCADE;
+  
+--
+-- Constraints for table `logins`
+--
+ALTER TABLE `logins`
+  ADD CONSTRAINT `logins_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`userid`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
