@@ -103,8 +103,10 @@ How to set up Kottu 2012
 copy the app ID and secret into `config.php`
 
 * You can log in to the admin panel at http://basepath/admin using the default 
-username `indi` and password `indi`. *Important!* Please change these values 
-in the `users` table to ensure security.
+username `indi` and password `indi`. 
+
+**Important!** Please change these values in the `users` table to ensure 
+security.
 
 
 cronjobs
