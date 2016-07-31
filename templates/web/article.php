@@ -6,7 +6,7 @@
     
         <div class="media">
 <?php if($i['img'] != config('basepath') .'/img/none.png'): ?>
-            <div class="media-left media-top">
+            <div class="media-left media-top hidden-xs">
                 <img class="media-object" alt="<?php echo $i['title']; ?>" src="<?php echo config('basepath') . '/img/?q=85&src=' . $i['img']; ?>"/></span>
             </div>
 <?php endif; ?>
@@ -20,7 +20,7 @@
         <button class="btn btn-primary btn-facebook" onClick="window.open('http://www.facebook.com/share.php?u=<?php echo $i['link']; ?>', 
         'Share on Facebook', 'toolbar=no, scrollbars=yes, width=500, height=400');" 
         title="This post was liked/shared <?php echo $i['fb']; ?> time(s)">
-            <span class="glyphicon glyphicon-share-alt"></span> Facebook Shares: <?php echo $i['fb']; ?>
+            <span class="glyphicon glyphicon-share-alt"></span> Shares: <?php echo $i['fb']; ?>
         </button>
         <button class="btn btn-link pull-right" title="The post popularity is <?php echo $i['buzz']; ?> chilies">           
             <img src="<?php echo config('basepath') , '/img/icons/chili' , $i['buzz']; ?>.png" 
