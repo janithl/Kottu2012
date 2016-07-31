@@ -2,20 +2,16 @@
 <div class="content"><!-- content -->
 
 	<article class="panel panel-default">
-		<div class="panel-heading">
-			<h2 class="panel-title">Blogroll</h2>
-		</div>
-		
+		<div class="panel-heading"><h2 class="panel-title">Blogroll</h2></div>
 		<div class="panel-body">
 			<p>This is a list of all the blogs currently syndicated on kottu.org. 
 			To add your (Sri Lankan) blog just email indi@indi.ca</p>
-
-			<ul>
-			<?php foreach($this->blogs as $b): ?>
-				<li><a href="<?php echo config('basepath') , '/blog/' , $b['bid']; ?>"><?php echo $b['name']; ?></a></li>
-			<?php endforeach; ?>
-			</ul>
 		</div>
+		<ul class="list-group">
+<?php foreach($this->blogs as $b): ?>
+				<li class="list-group-item"><a href="<?php echo config('basepath') , '/blog/' , $b['bid']; ?>"><?php echo $b['name']; ?></a></li>
+<?php endforeach; ?>
+		</ul>
 	</article>
 </div>
 </div>
