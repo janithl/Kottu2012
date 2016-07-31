@@ -1,39 +1,38 @@
+<div class="col-sm-12 col-md-8">
+<div class="content"><!-- content -->
 
-<div class="content">
+	<article class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">Blogroll</h2>
+		</div>
+		
+		<div class="panel-body">
+			<p>This is a list of all the blogs currently syndicated on kottu.org. 
+			To add your (Sri Lankan) blog just email indi@indi.ca</p>
 
-	<article class="post">
-	<div class="postheader">
-		<h2 class="posttitle">Blogroll</h2>
-	</div>
-        
-	<div class="postcont">
-	<p>
-	This is a list of all the blogs currently syndicated on kottu.org. 
-	To add your (Sri Lankan) blog just email indi@indi.ca
-	<ul>
-<?php foreach($this->blogs as $b): ?>
-	<li><a href="<?php echo config('basepath') , '/blog/' , $b['bid']; ?>"><?php echo $b['name']; ?></a></li>
-<?php endforeach; ?>
-	</ul>
-	</p>
-	</div>
+			<ul>
+			<?php foreach($this->blogs as $b): ?>
+				<li><a href="<?php echo config('basepath') , '/blog/' , $b['bid']; ?>"><?php echo $b['name']; ?></a></li>
+			<?php endforeach; ?>
+			</ul>
+		</div>
 	</article>
 </div>
+</div>
 
-<div class="sidebar">
-	<div class="widgetheader widgetfirst">Popular Blogs (Last 30 days)</div>
-	<div class="widgetcont">
-	<ul>
+<div class="sidebar col-sm-12 col-md-4">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h3 class="panel-title">Popular Blogs <small>(Last 30 days)</small></h3></div>
+		<div class="list-group">
 <?php foreach($this->popblogs as $pb): ?>
-	<li>
-		<a href="<?php echo config('basepath') , '/blog/' , $pb['bid']; ?>">
-		<strong><?php echo $pb['name']; ?></strong></a><br>
-		Last Updated: <?php echo $pb['lupdt']; ?><br>
+			<a href="<?php echo config('basepath') , '/blog/' , $pb['bid']; ?>" class="list-group-item">
+				<h4 class="list-group-item-heading"><?php echo $pb['name']; ?></h4>
+				<p class="list-group-item-text">Last Updated: <?php echo $pb['lupdt']; ?><br>
 		Average: <img title="Average post popularity is <?php echo $pb['buzz']; ?> chilies"
-		src="<?php echo config('basepath') , '/img/icons/chili' , $pb['buzz']; ?>.png" alt="<?php echo $pb['buzz']; ?> chilies"/>
-	</li>
-<?php endforeach; ?>	
-	</ul>
+		src="<?php echo config('basepath') , '/img/icons/chili' , $pb['buzz']; ?>.png" alt="<?php echo $pb['buzz']; ?> chilies"/></p>
+			</a>
+<?php endforeach; ?>
+		</div>
 	</div>
 </div>
 
