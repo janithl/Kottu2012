@@ -44,6 +44,11 @@ a:hover {
 .panel-default .panel-heading a {
 	color: #FFF;
 }
+
+.panel-default .panel-footer {
+	padding: 10px 5px;
+}
+
 /* header */
 
 #mainmenu {

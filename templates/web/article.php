@@ -16,13 +16,13 @@
     </div>
     
     <div class="panel-footer">
-        <button class="btn btn-link btn-ts"><?php echo $i['ts']; ?></button>
-        <button class="btn btn-primary btn-facebook" onClick="window.open('http://www.facebook.com/share.php?u=<?php echo $i['link']; ?>', 
+        <button class="btn btn-link btn-xs btn-ts"><?php echo $i['ts']; ?></button>
+        <button class="btn btn-primary btn-xs btn-facebook" onClick="window.open('http://www.facebook.com/share.php?u=<?php echo $i['link']; ?>', 
         'Share on Facebook', 'toolbar=no, scrollbars=yes, width=500, height=400');" 
         title="This post was liked/shared <?php echo $i['fb']; ?> time(s)">
             <span class="glyphicon glyphicon-share-alt"></span> Shares: <?php echo $i['fb']; ?>
         </button>
-        <button class="btn btn-link pull-right" title="The post popularity is <?php echo $i['buzz']; ?> chilies">           
+        <button class="btn btn-link btn-xs pull-right" title="The post popularity is <?php echo $i['buzz']; ?> chilies">           
             <img src="<?php echo config('basepath') , '/img/icons/chili' , $i['buzz']; ?>.png" 
                 alt="<?php echo $i['buzz']; ?> chilies"/>
         </button>
