@@ -40,6 +40,10 @@ a:hover {
 	background: #333;
 	color: #FFF;
 }
+
+.panel-default .panel-heading a {
+	color: #FFF;
+}
 /* header */
 
 #mainmenu {
@@ -93,7 +97,7 @@ a:hover {
 }
 
 /* content */
-article .nav-pills .active a {
+article .nav-pills .active a, article .nav-pills .active a:hover {
 	background: #EA3556;
 }
 
