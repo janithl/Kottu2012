@@ -48,10 +48,15 @@ class KottuBackend
 		
 		pretty straightforward, we send the url to the Twitter API, which 
 		replies in json, which we decode.
+
+		UPDATE: As of November 2015, Twitter has deprecated this API,
+		and we're getting rid of Twitter share counts as a result. 
+
+		https://blog.twitter.com/2015/hard-decisions-for-a-sustainable-platform
 	*/
 	public function gettweetcount($url) {
 		$tweetcount = 0;
-
+		/*
 		$json = @file_get_contents("http://urls.api.twitter.com/1/urls/"
 		."count.json?url=$url");
 		
@@ -60,7 +65,7 @@ class KottuBackend
 			$twitter = json_decode($json, true);
 			$tweetcount = $twitter['count'];
 		}
-
+		*/
 		return $tweetcount;
 	}
 	

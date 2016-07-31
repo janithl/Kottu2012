@@ -32,9 +32,9 @@ $config['fbappid']	= 'id';
 $config['fbappkey']	= 'key';
 
 /* Weight given to various factors when calculating spice (adds up to 1) */
-$config['twweight']	= 0.35;
-$config['fbweight'] = 0.20;
-$config['clweight'] = 0.45;
+$config['twweight']	= 0;
+$config['fbweight'] = 0.3;
+$config['clweight'] = 0.7;
 	
 function config($key) {
 	global $config;
