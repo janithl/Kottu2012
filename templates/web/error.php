@@ -5,90 +5,76 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<title>Kottu: Page Not Found</title>
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" media="all" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/css/style.css">
-	<!--[if lt IE 9]>
-	<link rel="stylesheet" type="text/css" media="all" href="<?php echo config('basepath'); ?>/static/css/ie8.css">
-	<![endif]-->
 	<link rel="icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="<?php echo config('basepath'); ?>/img/icons/kottu.ico" type="image/x-icon" />
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php echo config('basepath'); ?>/feed/" />
-	<script type="text/javascript" src="<?php echo config('basepath'); ?>/static/js/scroller.js"></script>
 </head>
 
 <body>
 
 <header>
-	<div class="mainmenu">
-		<ul>
-		<li><a href="<?php echo config('basepath'); ?>"><img alt="Kottu" src="<?php echo config('basepath'); ?>/img/icons/logo.png" /></a></li>
-		<li class="tagline">syndicates over <a href="<?php echo config('basepath'); ?>/blogroll">1000
-		 Sri Lankan blogs</a>. You can <a href="<?php echo config('basepath'); ?>/about">join too</a>.</li>
-		
-		<li class="langs"><a class="menuitem" href="<?php echo config('basepath') . '/ta/'; ?>">தமிழ்</a></li>
-		<li class="langs"><a class="menuitem" href="<?php echo config('basepath') . '/si/'; ?>">සිංහල</a></li>
-		<li class="langs"><a class="menuitem" href="<?php echo config('basepath') . '/en/'; ?>">English</a></li>
-		</ul>
-	</div>
+	<nav id="mainmenu" class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="<?php echo config('basepath'); ?>"><img alt="Kottu" title="Go to the Kottu home page" src="<?php echo config('basepath'); ?>/img/icons/logo.png" /></a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar-collapse">
+				<p class="navbar-text hidden-sm">syndicates over <a title="View our blogroll" href="<?php echo config('basepath'); ?>/blogroll">1000  
+Sri Lankan blogs</a>. You can <a title="Learn more about Kottu and how you can join" href="<?php echo config('basepath'); ?>/about">join too</a>.</p>
+				<form class="navbar-form navbar-left" method="GET" action="<?php echo config('basepath') ?>/all/search/">
+					<div class="form-group">
+						<input tabindex=1 id="searchbar" name="q" type="text" class="form-control" 
+						placeholder="Search Kottu..." value="">
+					</div>
+					<button tabindex=2 id="searchbtn" type="submit" class="btn btn-default">Search</button>
+				</form>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="langs"><a class="menuitem" title="View English language posts" href="<?php echo config('basepath') . '/en/'; ?>">English</a></li>
+					<li class="langs"><a class="menuitem" title="View Sinhala language posts" href="<?php echo config('basepath') . '/si/'; ?>">සිංහල</a></li>
+					<li class="langs"><a class="menuitem" title="View Tamil language posts" href="<?php echo config('basepath') . '/ta/'; ?>">தமிழ்</a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+  		</div>
+	</nav>
 </header>
 
-<div class="page">
+<div class="container">
+<div class="col-xs-12 col-sm-8 col-sm-offset-2">
+<div class="content"><!-- content -->
 
-<div class="content">
+	<article class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">404: Page Not Found</h2>
+		</div>
+		
+		<div class="panel-body text-center">
+			<p><img src="<?php echo config('basepath'); ?>/img/bpf.png"/></p>
 
-	<article class="post">
-	<div class="postheader">
-		<h2 class="posttitle">404: Page Not Found</h2>
-	</div>
-	
-	<div class="postcont">
-	<p style="text-align:center;">
-	<img src="<?php echo config('basepath'); ?>/img/bpf.png"/><br>
-	
-	The page that you were looking for could not be found. Would you like to search for it instead?<br><br>
-	</p>
-	<form role="search" method="get" class="searchform" action="<?php echo config('basepath'); ?>/all/search/" >
-	<input tabindex=1 type="text" class="searchbox" name="q" id="q" />
-	<input tabindex=2 type="submit" class="searchsubmit" value="Search" />
-	</form>
-	<br>
-	</div>
-	
+			<p>The page that you were looking for could not be found. Would you like to search for it instead?</p>
+
+			<form role="search" method="GET" class="searchform" action="<?php echo config('basepath'); ?>/all/search/">
+				<div class="input-group">
+					<input tabindex=3 type="text" name="q" id="q" class="form-control" placeholder="Search Kottu For...">
+					<span class="input-group-btn">
+						<button tabindex=4 class="btn btn-default" type="submit">Search!</button>
+					</span>
+				</div>
+			</form>
+		</div>
 	</article>
 
 </div>
-<div class="clear"></div>
+</div>
 
-<footer>
-	<ul class="footermenu">
-	<li><a href="https://github.com/janithl/Kottu2012" title="Github: Kottu source code">Source Code</a></li>
-	<li><a href="http://my.statcounter.com/project/standard/stats.php?project_id=610934&guest=1" title="Site stats">Stats</a></li>
-	<li><a href="<?php echo config('basepath'); ?>/feed/" title="RSS 2.0 feed for latest posts">Latest Posts <small>(RSS 2.0)</small></a></li>
-	<li><a href="<?php echo config('basepath'); ?>/feed/all/today" title="RSS 2.0 feed for popular posts">Popular Posts <small>(RSS 2.0)</small></a></li> 
-	<li><a href="<?php echo config('basepath'); ?>/about">About/Join</a></li>
-	<li><a href="<?php echo config('basepath'); ?>/blogroll">Blogroll</a></li>
-	</ul>
-</footer>
-
-</div><!-- end page -->
-
-<!-- Start of StatCounter Code -->
-<script type="text/javascript">
-var sc_project=610934; 
-var sc_invisible=0; 
-var sc_partition=4; 
-var sc_security="0af09d7d"; 
-</script>
-
-<script type="text/javascript" src="http://www.statcounter.com/counter/counter.js">
-</script>
-
-<!-- End of StatCounter Code -->
-
-<script src="http://www.google-analytics.com/urchin.js" type="­tex­t/­javas­cript"></script>
-<script type="­tex­t/­javas­cript">
-_uacct = "UA-182033-5";
-urch­in­Track­er­();
-</script>
-
-</body>
-</html>
+<?php include(__DIR__ . '/tail.php') ?>

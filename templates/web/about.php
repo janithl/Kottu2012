@@ -1,4 +1,4 @@
-<div class="col-sm-12">
+<div class="col-xs-12 col-sm-8 col-sm-offset-2">
 <div class="content"><!-- content -->
 
 	<article class="panel panel-default">
@@ -19,7 +19,7 @@
 			<p>To join just send a mail to indi@indi.ca. I’ll get around to a contact form someday.</p>
 
 			<h3>What Is Kottu?</h3>
-			
+
 			<p>Kottu reads a bunch of Sri Lankan blogs and posts summaries, basically. If you’re 
 			unfamiliar, a feed is something a blog has. If you’re unfamiliar with a blog, click some 
 			of the links on Kottu. It’s basically a personal webpage updated frequently. Every modern 
@@ -102,4 +102,5 @@
 		</div>
 	</article>
 
+</div>	
 </div>	
