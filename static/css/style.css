@@ -72,6 +72,14 @@ a:hover {
 	color: #FFF;
 }
 
+#mainmenu .langs {
+	margin: 5px 0;
+}
+
+#mainmenu .langs a {
+	padding: 10px 15px;
+}
+
 #mainmenu .langs.active a {
 	color: #FFF;
 	background: #FF003C;
