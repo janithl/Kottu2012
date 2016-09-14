@@ -15,10 +15,10 @@ $config['dbuser']	= 'root';
 $config['dbpwd']	= '';
 
 /* Index of first argument */
-$config['argstart']	= 2;
+$config['argstart']	= 1;
 
 /* base paths and stuff */
-$config['basepath'] = 'http://localhost/k2012';
+$config['basepath'] = 'http://localhost:8000';
 
 /* cache times, 30 minutes for static pages, 3 minutes for dynamic ones */
 $config['stacache'] = 1800;
@@ -26,6 +26,9 @@ $config['dyncache'] = 180;
 
 /* back-end secret key */
 $config['besecret'] = sha1('backendsecretkeywithunicorns');
+
+/* facebook graph api token */
+$config['fbtoken'] 	= '';
 
 /* facebook app id and secret key */
 $config['fbappid']	= 'id';

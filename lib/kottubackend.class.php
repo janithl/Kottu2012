@@ -73,17 +73,18 @@ class KottuBackend
 		Getting Facebook like/share count: Use FQL to get the fb count
 	*/
 	public function getfbcount($url) {
-		$fbcount = 0;
+		$fcount = 0;
 
-		$json = @file_get_contents("http://graph.facebook.com/?ids=$url");
+		$url 	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . "&access_token=" . config('fbtoken');
+		$json 	= @file_get_contents($url);
 		
 		if($json) {
 		
-			$fb = json_decode($json, true);
-			$fbcount = $fb[$url]['shares'];
+			$fb 	= json_decode($json, true);
+			$fcount = $fb['share']['share_count'];
 		}
 
-		return $fbcount;
+		return $fcount;
 	}
 
 	/*
