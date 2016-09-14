@@ -75,7 +75,8 @@ class KottuBackend
 	public function getfbcount($url) {
 		$fcount = 0;
 
-		$url 	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . "&access_token=" . config('fbtoken');
+		$url 	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . 
+			"&access_token=" . config('fbappid') . "|" .  config('fbappkey');
 		$json 	= @file_get_contents($url);
 		
 		if($json) {
