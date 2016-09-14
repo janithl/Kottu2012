@@ -75,12 +75,11 @@ class KottuBackend
 	public function getfbcount($url) {
 		$fcount = 0;
 
-		$url 	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . 
+		$urlstr	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . 
 			"&access_token=" . config('fbappid') . "|" .  config('fbappkey');
-		$json 	= @file_get_contents($url);
 		
+		$json 	= @file_get_contents($urlstr);
 		if($json) {
-		
 			$fb 	= json_decode($json, true);
 			$fcount = $fb['share']['share_count'];
 		}
