@@ -4,9 +4,9 @@
         id="<?php echo $i['id']; ?>"><?php echo $i['title']; ?></a></h3>
         <a href="<?php echo config('basepath') . '/blog/' . $i['bid']; ?>"><?php echo $i['blog']; ?></a>
     
-        <div class="media">
+        <div class="media hidden-xs">
 <?php if($i['img'] != config('basepath') .'/img/none.png'): ?>
-            <div class="media-left media-top hidden-xs">
+            <div class="media-left media-top">
                 <img class="media-object" alt="<?php echo $i['title']; ?>" src="<?php echo config('basepath') . '/img/?q=85&src=' . $i['img']; ?>"/></span>
             </div>
 <?php endif; ?>
