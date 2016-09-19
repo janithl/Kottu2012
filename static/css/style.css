@@ -174,3 +174,8 @@ footer li {
 	display: inline;
 	padding: 0 5px;
 }
+
+/** responsive */
+@media (max-width: 768px) {
+	h3 { font-size: 18px; }	
+}

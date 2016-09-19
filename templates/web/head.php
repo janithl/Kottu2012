@@ -30,7 +30,7 @@
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="navbar-collapse">
-				<p class="navbar-text hidden-sm">syndicates over <a title="View our blogroll" href="<?php echo config('basepath'); ?>/blogroll"><?php echo $this->numblogs; ?> 
+				<p class="navbar-text hidden-sm"><strong class="visible-xs-inline">Kottu </strong>syndicates over <a title="View our blogroll" href="<?php echo config('basepath'); ?>/blogroll"><?php echo $this->numblogs; ?> 
 Sri Lankan blogs</a>. You can <a title="Learn more about Kottu and how you can join" href="<?php echo config('basepath'); ?>/about">join too</a>.</p>
 				<form class="navbar-form navbar-left" method="GET" action="<?php echo config('basepath'),'/',$this->lang; ?>/search/">
 					<div class="form-group">
