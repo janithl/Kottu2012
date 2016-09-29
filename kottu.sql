@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `blogs` (
   `bid` int(11) NOT NULL auto_increment,
-  `blogName` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
-  `blogURL` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
-  `blogRSS` varchar(128) character set utf8 collate utf8_unicode_ci NOT NULL,
+  `blogName` varchar(64) NOT NULL,
+  `blogURL` varchar(64) NOT NULL,
+  `blogRSS` varchar(128) NOT NULL,
   `access_ts` int(11) NOT NULL default '0',
   `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`bid`),
   UNIQUE KEY `blogURL` (`blogURL`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11664 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000;
 
 -- --------------------------------------------------------
 
@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `postID` int(11) NOT NULL auto_increment,
   `blogID` int(11) NOT NULL,
   `link` varchar(320) NOT NULL,
-  `title` varchar(192) character set utf8 collate utf8_unicode_ci NOT NULL,
-  `postContent` varchar(512) character set utf8 collate utf8_unicode_ci default NULL,
+  `title` varchar(192) NOT NULL,
+  `postContent` varchar(512) default NULL,
   `thumbnail` varchar(128) default NULL,
-  `tags` varchar(32) character set utf8 collate utf8_unicode_ci default NULL,
+  `tags` varchar(32) default NULL,
   `language` set('en','si','ta','dv') NOT NULL default 'en',
   `serverTimestamp` int(11) NOT NULL default '0',
   `tweetCount` int(11) NOT NULL default '0',
@@ -75,7 +75,36 @@ CREATE TABLE IF NOT EXISTS `posts` (
   UNIQUE KEY `link` (`link`),
   KEY `blogID` (`blogID`),
   KEY `serverTimestamp` (`serverTimestamp`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=196125 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100000;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `terms`
+--
+
+CREATE TABLE IF NOT EXISTS `terms` (
+  `tid` int(11) NOT NULL auto_increment,
+  `term` varchar(31) NOT NULL,
+  `term_freq` int(11),
+  `doc_freq` int (11),
+  `inv_doc_freq` float,
+  PRIMARY KEY  (`tid`),
+  UNIQUE KEY `term` (`term`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_terms`
+--
+
+CREATE TABLE IF NOT EXISTS `post_terms` (
+  `pid` int(11) NOT NULL,
+  `tid` int(11) NOT NULL,
+  `frequency` int(11),
+  PRIMARY KEY  (`pid`, `tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -84,10 +113,10 @@ CREATE TABLE IF NOT EXISTS `posts` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `userid` varchar(64) character set utf8 collate utf8_unicode_ci NOT NULL,
+  `userid` varchar(64) NOT NULL,
   `hash` varchar(64) NOT NULL,
   PRIMARY KEY  (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Insert default user into `users`
@@ -104,13 +133,13 @@ VALUES ('indi', SHA1( 'indi' ));
 
 CREATE TABLE IF NOT EXISTS `logins` (
   `id` int(11) NOT NULL auto_increment,
-  `user` varchar(64) character set utf8 collate utf8_unicode_ci default NULL,
+  `user` varchar(64) default NULL,
   `ipaddr` varchar(32) NOT NULL,
   `timestamp` int(11) NOT NULL,
   `useragent` varchar(196) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `user` (`user`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1012 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
 
