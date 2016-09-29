@@ -152,6 +152,15 @@ CREATE TABLE IF NOT EXISTS `logins` (
 --
 ALTER TABLE `clicks`
   ADD CONSTRAINT `clicks_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `posts` (`postID`) ON DELETE CASCADE;
+  
+--
+-- Constraints for table `post_terms`
+--
+ALTER TABLE `post_terms`
+  ADD CONSTRAINT `post_terms_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `posts` (`postID`) ON DELETE CASCADE;
+  
+ALTER TABLE `post_terms`
+  ADD CONSTRAINT `post_terms_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `terms` (`tid`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `posts`
