@@ -86,9 +86,9 @@ CREATE TABLE IF NOT EXISTS `posts` (
 CREATE TABLE IF NOT EXISTS `terms` (
   `tid` int(11) NOT NULL auto_increment,
   `term` varchar(31) NOT NULL,
-  `term_freq` int(11),
-  `doc_freq` int (11),
-  `inv_doc_freq` float,
+  `term_freq` int(11) NOT NULL default '0',
+  `doc_freq` int (11) NOT NULL default '0',
+  `inv_doc_freq` float NOT NULL default '0',
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `term` (`term`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `terms` (
 CREATE TABLE IF NOT EXISTS `post_terms` (
   `pid` int(11) NOT NULL,
   `tid` int(11) NOT NULL,
-  `frequency` int(11),
+  `frequency` int(11) NOT NULL default '0',
   PRIMARY KEY  (`pid`, `tid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
