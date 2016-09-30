@@ -419,6 +419,71 @@ class KottuBackend
 			}
 		}
 	}
+	
+	/*
+		Add a term to DB, ignore if already there 
+		Link up the term to posts that contain it
+	*/
+	public function insertterms($postid, $terms) {
+		
+		/** store terms in db */
+		$termkeys = array_keys($terms);
+		$this->dbh->begin();
+		$this->dbh->query("ALTER TABLE terms AUTO_INCREMENT = 100000;", array());
+		foreach($termkeys as $t) {
+			$this->dbh->query("INSERT IGNORE terms(term) VALUES(:term)", array(':term' => $t));
+		}
+		$this->dbh->commit();
+		
+		/** link terms to posts */
+		$this->dbh->begin();
+		foreach($terms as $term => $freq) {
+			$resultset = $this->dbh->query("SELECT tid FROM terms WHERE term = :term", 
+			array(':term' => $term));
+			
+			if($resultset &&  ($row = $resultset->fetch()) != false) {
+				$this->dbh->query("INSERT IGNORE post_terms(pid, tid, frequency) "
+				."VALUES(:pid, :tid, :freq)", array(
+					':pid' 	=> $postid, 
+					':tid' 	=> $row[0],
+					':freq' => $freq 
+				));
+			}
+		}
+		$this->dbh->commit();
+	}
+	
+	/*
+		Do term discovery for posts that are in the DB
+	*/
+	public function termdiscovery() {
+		$resultset = $this->dbh->query("SELECT postID, postContent FROM posts "
+		."WHERE language = 'en' AND postID NOT IN (SELECT pid FROM post_terms) "
+		."ORDER BY postID DESC LIMIT 50", array());
+		
+		/** discover terms in post description */
+		$terms = array();
+		if($resultset) {
+			while(($row = $resultset->fetch()) != false) {
+				$words = explode(" ", $row[1]);
+				$clean = array_map(function($w) {
+					return strtolower(trim($w, " ,.?!&/()#0123456789_-:;"));
+				}, $words);
+				$terms[$row[0]] = array_count_values($clean);
+			}
+		}
+
+		/** filter out long words (urls etc) and insert into db */
+		foreach($terms as $post => $termcounts) {
+			$cleaned = array_filter($termcounts, function($term) {
+				return strlen($term) > 2 && strlen($term) < 20;
+			}, ARRAY_FILTER_USE_KEY);
+			
+			if(count($cleaned) > 0) {
+				$this->insertterms($post, $cleaned);
+			}
+		}
+	}
 }
 
 ?>
