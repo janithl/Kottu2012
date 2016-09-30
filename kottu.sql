@@ -16,10 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Database: `448988_kottu7`
---
-
 -- --------------------------------------------------------
 
 --
@@ -98,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `terms` (
 -- Insert stopwords into `terms`
 --
 
-INSERT INTO `kottu`.`terms` (`term` ,`stopword`)
+INSERT INTO `terms` (`term` ,`stopword`)
 VALUES ("...", 1),
 ("a", 1),
 ("able", 1),
@@ -673,7 +669,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Insert default user into `users`
 --
 
-INSERT INTO `kottu`.`users` (`userid` ,`hash`)
+INSERT INTO `users` (`userid` ,`hash`)
 VALUES ('indi', SHA1( 'indi' ));
 
 -- --------------------------------------------------------
