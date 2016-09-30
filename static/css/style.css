@@ -91,22 +91,17 @@ a:hover {
 }
 
 #mainmenu #searchbar {
-	border-radius: 0px;
-	background: #333333;
-	border: 1px solid #C9C9C9;
-	color: #C9C9C9;
+	border: 0;
 }
 
 #mainmenu #searchbtn {
-	border-radius: 0px;
-	background: #333333;
-	border: 1px solid #EA3556;
-	color: #EA3556;
+	background: #EA3556;
+	color: #FFF;
+	border: 1px solid #E03050;
 }
 
 #mainmenu #searchbtn:hover {
-	color: #FFF;
-	background: #EA3556;
+	background: #E03050;
 }
 
 /* content */
