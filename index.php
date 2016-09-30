@@ -245,6 +245,33 @@ else {
 		$out->render('web/sidebar.php');
 		$out->render('web/tail.php');
 	}
+	elseif($path[$i + 1] == 'topic' && strlen($path[$i + 2]) > 5) {
+	
+		/* Trending Topics */
+		if($topic = $k->fetchtopictitle($path[$i + 2])) {
+			$out->title 	= "Kottu: " . htmlentities($topic);
+			$out->numblogs	= $k->fetchnumblogs();
+			$out->lang 	= 'all';
+			$out->time 	= 'off';
+			$out->page	= isset($path[$i + 3]) && strlen($path[$i + 3]) ? 
+							$path[$i + 3] : 0;
+								
+			$out->posts 	= $k->fetchtopicposts($path[$i + 2], $out->page);
+			$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
+			$out->trending	= $k->trendingtopics();
+			$out->toplink	= "topic/{$path[$i + 2]}/";
+			$out->currentpage = $out->lang . '/' . $out->toplink;
+			
+			$out->render('web/head.php');
+			$out->render('web/items.php');
+			$out->render('web/sidebar.php');
+			$out->render('web/tail.php');
+		}
+		else {
+			include('./templates/web/error.php');
+			die();
+		}
+	}
 	elseif($path[$i + 1] == 'search') {
 
 		/* Web Search */

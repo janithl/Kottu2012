@@ -278,7 +278,6 @@ class Kottu
 		Get trending topics (last 24 hours)
 	*/
 	public function trendingtopics() {
-	
 		$topics = array();
 		
 		$resultset = $this->dbh->query("SELECT tid, term, doc_freq FROM terms "
@@ -295,6 +294,60 @@ class Kottu
 		}
 		
 		return $topics;
+	}
+	
+	/*
+		Get topic title
+	*/
+	public function fetchtopictitle($tid) {
+		$resultset = $this->dbh->query("SELECT term FROM terms "
+		."WHERE tid = :tid", array(':tid' => $tid));
+		
+		if($resultset && ($row = $resultset->fetch()) != false) {
+			return $row[0];
+		}
+		
+		return false;
+	}
+	
+	/*
+		Get posts for topic
+	*/
+	public function fetchtopicposts($tid, $pageno=0) {
+		$posts 	= array();
+		$page 	= ((int) $pageno) * 20;
+		
+		$resultset = $this->dbh->query("SELECT p.postID, p.title, "
+			."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
+			."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+			."FROM posts AS p, blogs AS b WHERE b.active = 1 "
+			."AND b.bid = p.blogID AND p.postID IN "
+			."(SELECT pid FROM post_terms WHERE tid = :tid) "
+			."ORDER BY p.serverTimestamp DESC LIMIT :page, 20", 
+			array(':tid' => $tid, ':page' => $page));
+
+		if($resultset) {
+			while(($row = $resultset->fetch()) != false) {
+				$p['id']	= $row[0];
+				$p['title'] = strip_tags($row[1]);
+				$p['link']	= $row[2];
+				$p['ts']	= $this->humants($row[3]);
+				$p['longt'] = date('D, d M Y H:i:s O', $row[3]);
+				$p['buzz']	= $this->chilies($row[4]);
+				$p['blog']	= $row[5];
+				$p['bid']	= $row[6];
+				$p['img']	= strlen($row[7]) > 1 ? $row[7] : config('basepath')
+								.'/img/none.png';
+				$p['img']	= preg_replace('/&*(w=|h=)[0-9]+/', '', $p['img']); 
+				$p['cont']	= strip_tags($row[8]);
+				$p['fb']	= $row[9];
+				$p['tw']	= $row[10];
+				
+				$posts[] 	= $p;
+			}
+		}
+		
+		return $posts;
 	}
 	
 	/*

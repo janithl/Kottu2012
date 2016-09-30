@@ -18,7 +18,7 @@
 		<div class="panel-heading"><h3 class="panel-title">Trending Topics <small>Today</small></h3></div>
 		<div class="list-group">
 <?php foreach($this->trending as $t): ?>
-			<a href="<?php echo config('basepath') . '/?tag=' . $t['tid'] ?>" class="list-group-item">
+			<a href="<?php echo config('basepath') . '/all/topic/' . $t['tid'] ?>" class="list-group-item">
 				<span class="badge"><?php echo $t['docs']; ?></span>
 				<?php echo $t['term']; ?>
 			</a>
