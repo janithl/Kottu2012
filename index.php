@@ -65,10 +65,9 @@ else {
 		}
 	}
 	elseif($path[$i] == 'admin') {
-		
-		if(($path[$i + 1] == 'cacheclear' || $path[$i + 1] == 'feedget' ||
-			$path[$i + 1] == 'calculatespice') && sha1($path[$i + 2]) === 
-			config('besecret')) {
+		$allowed_paths = array('cacheclear', 'feedget', 'termdiscovery', 'calculatespice');
+		if(in_array($path[$i + 1], $allowed_paths) && 
+			sha1($path[$i + 2]) === config('besecret')) {
 			
 			require('./lib/kottubackend.class.php');
 			$kbe = new KottuBackend();
@@ -77,7 +76,6 @@ else {
 			call_user_func(array($kbe, $path[$i + 1]));
 		}
 		else {
-		
 			unset($k);
 		
 			require('./lib/kottuadmin.class.php');
