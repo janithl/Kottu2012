@@ -87,9 +87,9 @@ CREATE TABLE IF NOT EXISTS `terms` (
   `tid` int(11) NOT NULL auto_increment,
   `term` varchar(31) NOT NULL,
   `stopword` tinyint(4) NOT NULL default '0',
-  `term_freq` int(11) NOT NULL default '0',
-  `doc_freq` int (11) NOT NULL default '0',
-  `inv_doc_freq` float NOT NULL default '0',
+  `term_freq` int(11) default NULL,
+  `doc_freq` int (11) default NULL,
+  `tf_idf` float default NULL,
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `term` (`term`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100000;
