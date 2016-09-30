@@ -483,6 +483,53 @@ class KottuBackend
 				$this->insertterms($post, $cleaned);
 			}
 		}
+		
+		$this->calculatetfidf();
+	}
+	
+	/*
+		calculate tf-idf (last 24 hours) for trending topics
+	*/
+	public function calculatetfidf() {
+		$day = $this->now - 86400;
+		
+		$this->dbh->begin();
+		$this->dbh->query("UPDATE terms "
+		."SET term_freq = NULL, doc_freq = NULL, tf_idf = NULL", array());
+		
+		$resultset = $this->dbh->query("SELECT COUNT(*) FROM posts "
+		."WHERE language = 'en' AND serverTimestamp > :day", array(':day' => $day));
+		
+		if($resultset && ($row = $resultset->fetch()) != false && $row[0] > 0) {
+			
+			error_log($row[0]);
+			
+			$this->dbh->query("UPDATE terms AS t SET t.term_freq = "
+			."(SELECT SUM(frequency) FROM post_terms AS pt "
+			."WHERE pt.tid = t.tid AND pt.pid IN "
+			."(SELECT postID FROM posts "
+			."WHERE serverTimestamp > :day and language = 'en'))",
+			array(':day' => $day));
+			
+			$this->dbh->query("UPDATE terms AS t SET t.doc_freq = "
+			."(SELECT COUNT(*) FROM post_terms AS pt "
+			."WHERE pt.tid = t.tid AND pt.pid IN "
+			."(SELECT postID FROM posts "
+			."WHERE serverTimestamp > :day and language = 'en'))",
+			array(':day' => $day));
+			
+			/** 
+				tf-idf calculation:
+					row[0] is total number of posts (N) in last 24 hours 
+					tf_idf = tf * log(N / idf)		
+			*/
+			$this->dbh->query("UPDATE terms "
+			."SET tf_idf = term_freq * LOG(:ndocs / doc_freq) "
+			."WHERE term_freq > 0 AND doc_freq > 0", 
+			array(':ndocs' => $row[0]));
+		}
+			
+		$this->dbh->commit();
 	}
 }
 
