@@ -488,10 +488,10 @@ class KottuBackend
 	}
 	
 	/*
-		calculate tf-idf (last 24 hours) for trending topics
+		calculate tf-idf (last 36 hours) for trending topics
 	*/
 	public function calculatetfidf() {
-		$day = $this->now - 86400;
+		$day = $this->now - 129600;
 		
 		$this->dbh->begin();
 		$this->dbh->query("UPDATE terms "
