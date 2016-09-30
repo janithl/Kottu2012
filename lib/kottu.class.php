@@ -275,30 +275,26 @@ class Kottu
 	}
 	
 	/*
-		Gets the eVillage scroller in the sidebar
+		Get trending topics (last 24 hours)
 	*/
-	public function sidescroller() {
+	public function trendingtopics() {
 	
-		$posts = array();
+		$topics = array();
 		
-		$resultset = $this->dbh->query("SELECT p.link, p.title, "
-		."p.serverTimestamp, p.postContent FROM posts AS p WHERE p.blogid "
-		."IN (11407, 11403, 10419, 10278, 11411, 11412, 11413, 11414, 11431) "
-		."ORDER BY serverTimestamp DESC LIMIT 5", array());
+		$resultset = $this->dbh->query("SELECT tid, term, doc_freq FROM terms "
+		."WHERE stopword = 0 ORDER BY tf_idf DESC LIMIT 10", array());
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
-			
-				$p['link']	= $row[0];
-				$p['title']	= $row[1];
-				$p['ts']	= $this->humants($row[2]);
-				$p['cont']	= $row[3];
-				
-				$posts[] = $p;
+				$topics[] 	= array(
+					'tid' 	=> $row[0],
+					'term' 	=> $row[1],
+					'docs' 	=> $row[2]
+				);
 			}
 		}
 		
-		return $posts;
+		return $topics;
 	}
 	
 	/*

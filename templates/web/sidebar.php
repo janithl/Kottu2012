@@ -1,65 +1,28 @@
 <div class="sidebar col-sm-12 col-md-4">
 	<div class="panel panel-default">
-		<div class="panel-heading"><h3 class="panel-title">Tags</h3></div>
-		<div class="panel-body">
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/tech/'; ?>">tech</a>
-			</span>
-			<span class="tag tagsize1">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/nature/'; ?>">nature</a>
-			</span>
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/news/'; ?>">news</a>
-			</span>
-			<span class="tag tagsize1">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/education/'; ?>">education</a>
-			</span>
-			<span class="tag tagsize1">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/travel/'; ?>">food/travel</a>
-			</span>
-			<span class="tag tagsize3">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/sports/'; ?>">sports</a>
-			</span>
-			<span class="tag tagsize3">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/personal/'; ?>">personal</a>
-			</span>
-			<span class="tag tagsize1">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/poetry/'; ?>">poetry</a>
-			</span>
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/business/'; ?>">business</a>
-			</span>
-			<span class="tag tagsize1">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/faith/'; ?>">faith</a>
-			</span>
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/entertainment/'; ?>">arts</a>
-			</span>
-			<span class="tag tagsize3">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/politics/'; ?>">politics</a>
-			</span>
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/photo/'; ?>">photo</a>
-			</span>
-			<span class="tag tagsize2">
-				<a href="<?php echo config('basepath'), '/', $this->lang, '/tags/other/'; ?>">etc</a>
-			</span>
-		</div>
-	</div>
-
-	<div class="panel panel-default">
 		<div class="panel-heading"><h3 class="panel-title">Hot Posts <small>Today</small></h3></div>
-		<ul class="list-group">
+		<div class="list-group">
 <?php foreach($this->hotposts as $p): ?>
-			<li class="list-group-item">
-				<a target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $p['id'] . '&url=' . $p['link']; ?>">
-				<?php echo $p['title']; ?></a>
-			</li>
+			<a class="list-group-item" target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $p['id'] . '&url=' . $p['link']; ?>">
+				<?php echo $p['title']; ?>
+			</a>
 <?php endforeach; ?>
-		</ul>
+		</div>
 		<div class="panel-footer text-center">
 			<a class="btn btn-success" title="View posts listed by popularity" 
 				href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">See More →</a>
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading"><h3 class="panel-title">Trending Topics <small>Today</small></h3></div>
+		<div class="list-group">
+<?php foreach($this->trending as $t): ?>
+			<a href="<?php echo config('basepath') . '/?tag=' . $t['tid'] ?>" class="list-group-item">
+				<span class="badge"><?php echo $t['docs']; ?></span>
+				<?php echo $t['term']; ?>
+			</a>
+<?php endforeach; ?>
 		</div>
 	</div>
 	

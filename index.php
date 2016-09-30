@@ -236,7 +236,7 @@ else {
 		$out->lang	= $path[$i];
 		$out->posts = $k->search('', $out->page, $path[$i], $path[$i + 2]);
 		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-		$out->evillage	= $k->sidescroller();
+		$out->trending	= $k->trendingtopics();
 		$out->toplink	= "tags/{$path[$i + 2]}/";
 		$out->currentpage	= $out->lang . '/' . $out->toplink;
 		
@@ -292,7 +292,7 @@ else {
 
 		$out->numblogs	= $k->fetchnumblogs();
 		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-		$out->evillage	= $k->sidescroller();	
+		$out->trending	= $k->trendingtopics();
 		$out->currentpage = "blog/{$out->bid}/{$out->pop}/";
 
 		$out->render('web/head.php');
@@ -351,7 +351,7 @@ else {
 				$out->numblogs	= $k->fetchnumblogs();
 				$out->posts		= $k->fetchallposts($out->lang, $out->time, $out->page);
 				$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-				$out->evillage	= $k->sidescroller();
+				$out->trending	= $k->trendingtopics();
 				$out->currentpage = "{$out->lang}/{$out->time}/";
 				$out->mainpage	= true;
 
