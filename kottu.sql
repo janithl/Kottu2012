@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `terms` (
   `term_freq` int(11) default NULL,
   `doc_freq` int (11) default NULL,
   `tf_idf` float default NULL,
+  `topic` int (11) default NULL,
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `term` (`term`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100000;

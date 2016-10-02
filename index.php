@@ -65,7 +65,9 @@ else {
 		}
 	}
 	elseif($path[$i] == 'admin') {
-		$allowed_paths = array('cacheclear', 'feedget', 'termdiscovery', 'calculatespice');
+		$allowed_paths = array('cacheclear', 'feedget', 'termdiscovery', 
+			'calculateclusters', 'calculatespice');
+		
 		if(in_array($path[$i + 1], $allowed_paths) && 
 			sha1($path[$i + 2]) === config('besecret')) {
 			

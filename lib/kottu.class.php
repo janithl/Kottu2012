@@ -275,20 +275,23 @@ class Kottu
 	}
 	
 	/*
-		Get trending topics (last 24 hours)
+		Get trending topics (last 36 hours)
 	*/
 	public function trendingtopics() {
 		$topics = array();
 		
-		$resultset = $this->dbh->query("SELECT tid, term, doc_freq FROM terms "
-		."WHERE stopword = 0 ORDER BY tf_idf DESC LIMIT 10", array());
+		$this->dbh->query("SET SESSION group_concat_max_len = 40", array());
+
+		$resultset = $this->dbh->query("SELECT topic, "
+		."GROUP_CONCAT(term ORDER BY tf_idf DESC SEPARATOR ', ') FROM terms "
+		."WHERE stopword = 0 AND topic IS NOT NULL "
+		."GROUP BY topic ORDER BY SUM(doc_freq) DESC LIMIT 10", array());
 		
 		if($resultset) {
 			while (($row = $resultset->fetch()) != false) {
 				$topics[] 	= array(
-					'tid' 	=> $row[0],
-					'term' 	=> $row[1],
-					'docs' 	=> $row[2]
+					'topic' => $row[0],
+					'term' 	=> $row[1]
 				);
 			}
 		}
@@ -299,9 +302,10 @@ class Kottu
 	/*
 		Get topic title
 	*/
-	public function fetchtopictitle($tid) {
-		$resultset = $this->dbh->query("SELECT term FROM terms "
-		."WHERE tid = :tid", array(':tid' => $tid));
+	public function fetchtopictitle($topic) {
+		$resultset = $this->dbh->query(
+			"SELECT GROUP_CONCAT(term ORDER BY tf_idf DESC SEPARATOR ', ') "
+			."FROM terms WHERE topic = :topic", array(':topic' => $topic));
 		
 		if($resultset && ($row = $resultset->fetch()) != false) {
 			return $row[0];
@@ -313,18 +317,21 @@ class Kottu
 	/*
 		Get posts for topic
 	*/
-	public function fetchtopicposts($tid, $pageno=0) {
+	public function fetchtopicposts($topic, $pageno=0) {
 		$posts 	= array();
 		$page 	= ((int) $pageno) * 20;
+
+		$this->dbh->query("SET SESSION group_concat_max_len = 40", array());
 		
 		$resultset = $this->dbh->query("SELECT p.postID, p.title, "
 			."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
 			."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
 			."FROM posts AS p, blogs AS b WHERE b.active = 1 "
 			."AND b.bid = p.blogID AND p.postID IN "
-			."(SELECT pid FROM post_terms WHERE tid = :tid) "
+			."(SELECT pid FROM post_terms as pt JOIN terms as t "
+			."ON (pt.tid = t.tid) WHERE t.topic = :topic) "
 			."ORDER BY p.serverTimestamp DESC LIMIT :page, 20", 
-			array(':tid' => $tid, ':page' => $page));
+			array(':topic' => $topic, ':page' => $page));
 
 		if($resultset) {
 			while(($row = $resultset->fetch()) != false) {

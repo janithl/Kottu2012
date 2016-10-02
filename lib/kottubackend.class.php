@@ -531,6 +531,122 @@ class KottuBackend
 			
 		$this->dbh->commit();
 	}
+
+	/** calculate vector length */
+	public function vectorlength($vector) {
+		return array_sum(array_map(function($item) {
+			return $item * $item;
+		}, $vector));
+	}
+
+	/** calculate cosine similarity between two vectors */
+	public function cosinesimilarity($a, $b) {
+		/** calculate dot product */
+		$dotprod = 0;
+		foreach(array_keys($a) as $key1) {
+			foreach(array_keys($b) as $key2) {
+				if($key1 === $key2) {
+					$dotprod += $a[$key1] * $b[$key2];
+				}
+			}
+		}
+
+		return $dotprod / ($this->vectorlength($a) * $this->vectorlength($b));
+	}
+
+	public function sim($v1, $v2) {
+		return count(array_intersect($v1, $v2)) / (1.0 * count(array_unique(array_merge($v1, $v2))));
+	}
+
+	/** assign a term to a cluster if it passes the minimum threshold */
+	public function calculateclusters() {
+		$threshold = 0.25; /** min cos similarity to cluster together */
+
+		$resultset = $this->dbh->query("SELECT pid, tid "
+		."FROM post_terms WHERE tid IN (SELECT tid FROM terms WHERE stopword = 0) "
+		."ORDER BY pid DESC", array());
+
+		$docs = array();
+		if($resultset) {
+			while(($row = $resultset->fetch()) != false) {
+				if(!array_key_exists($row[0], $docs)) {
+					$docs[$row[0]] = array();
+				}
+				$docs[$row[0]][] = $row[1];
+			}
+		}
+
+		//print_r($docs);
+
+		$clusters = array();
+		foreach($docs as $d1 => $terms1) {
+			unset($docs[$d1]);
+			$cluster = array($d1);
+			foreach($docs as $d2 => $terms2) {
+				if($this->sim($terms1, $terms2) > $threshold) {
+					$cluster[] = $d2;
+					unset($docs[$d2]);
+				}
+			}
+
+			if(count($cluster) > 1) {
+				$clusters[] = $cluster;
+			}
+		}
+
+		$k = new Kottu();
+		echo "<pre>";
+		foreach($clusters as $c) {
+			echo "--------\n";
+			foreach($c as $post) {
+				$p = $k->fetchpostbyid($post);
+				echo "<a href=\"" . $p['link'] . "\">" . $p['title'] . "</a>\n";
+			}
+		}
+
+
+
+/*		$resultset = $this->dbh->query("SELECT pid, tid, frequency "
+		."FROM post_terms WHERE tid IN (SELECT tid FROM terms WHERE stopword = 0) "
+		."ORDER BY pid DESC", array());
+
+		$terms = array();
+		if($resultset) {
+			while(($row = $resultset->fetch()) != false) {
+				if(!array_key_exists($row[0], $terms)) {
+					$terms[$row[0]] = array();
+				}
+				$terms[$row[0]][$row[1]] = $row[2];
+			}
+		}
+
+		$clusters = array();
+		foreach($terms as $t1 => $docs1) {
+			unset($terms[$t1]);
+			$cluster = array($t1);
+			foreach($terms as $t2 => $docs2) {
+				if($this->cosinesimilarity($docs1, $docs2) >= $threshold) {
+					$cluster[] = $t2;
+					unset($terms[$t2]);
+				}
+			}
+
+			if(count($cluster) > 1) {
+				$clusters[$t1] = $cluster;
+			}
+		}
+
+		print_r($clusters);
+
+		$this->dbh->begin();
+		foreach($clusters as $c => $terms) {
+			foreach($terms as $t) {
+				$this->dbh->query("UPDATE terms SET topic = :topic "
+				."WHERE pid = :tid", array(':topic' => $c, ':tid' => $t));
+			}
+		}
+		$this->dbh->commit();*/
+	}
 }
 
 ?>
