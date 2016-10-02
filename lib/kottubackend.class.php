@@ -514,7 +514,7 @@ class KottuBackend
 				."SELECT COUNT(*) FROM post_terms AS pt "
 				."WHERE pt.tid = t.tid AND pt.pid IN ("
 					."SELECT postID FROM posts "
-					."WHERE serverTimestamp > day2 and language = 'en'"
+					."WHERE serverTimestamp > :day2 and language = 'en'"
 				.")"
 			.")", array(':day1' => $day, ':day2' => $day));
 			
