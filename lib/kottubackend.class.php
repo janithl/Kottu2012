@@ -494,6 +494,7 @@ class KottuBackend
 		$day = $this->now - 129600;
 		
 		$this->dbh->begin();
+		/** zero out all the things, we only want stats for last 36 hours */
 		$this->dbh->query("UPDATE terms "
 		."SET term_freq = NULL, doc_freq = NULL, tf_idf = NULL", array());
 		
@@ -501,22 +502,21 @@ class KottuBackend
 		."WHERE language = 'en' AND serverTimestamp > :day", array(':day' => $day));
 		
 		if($resultset && ($row = $resultset->fetch()) != false && $row[0] > 0) {
-			
-			error_log($row[0]);
-			
-			$this->dbh->query("UPDATE terms AS t SET t.term_freq = "
-			."(SELECT SUM(frequency) FROM post_terms AS pt "
-			."WHERE pt.tid = t.tid AND pt.pid IN "
-			."(SELECT postID FROM posts "
-			."WHERE serverTimestamp > :day and language = 'en'))",
-			array(':day' => $day));
-			
-			$this->dbh->query("UPDATE terms AS t SET t.doc_freq = "
-			."(SELECT COUNT(*) FROM post_terms AS pt "
-			."WHERE pt.tid = t.tid AND pt.pid IN "
-			."(SELECT postID FROM posts "
-			."WHERE serverTimestamp > :day and language = 'en'))",
-			array(':day' => $day));
+			/** set term frequency and document frequency for recent posts */			
+			$this->dbh->query("UPDATE terms AS t "
+			."SET t.term_freq = ("
+				."SELECT SUM(frequency) FROM post_terms AS pt "
+				."WHERE pt.tid = t.tid AND pt.pid IN ("
+					."SELECT postID FROM posts "
+					."WHERE serverTimestamp > :day1 and language = 'en'"
+				.")"
+			."), t.doc_freq = ("
+				."SELECT COUNT(*) FROM post_terms AS pt "
+				."WHERE pt.tid = t.tid AND pt.pid IN ("
+					."SELECT postID FROM posts "
+					."WHERE serverTimestamp > day2 and language = 'en'"
+				.")"
+			.")", array(':day1' => $day, ':day2' => $day));
 			
 			/** 
 				tf-idf calculation:
