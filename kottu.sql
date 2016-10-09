@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `fbCount` int(11) NOT NULL default '0',
   `api_ts` int(11) NOT NULL default '0',
   `postBuzz` float NOT NULL default '0',
+  `trend` float NOT NULL default '0',
   PRIMARY KEY  (`postID`),
   UNIQUE KEY `link` (`link`),
   KEY `blogID` (`blogID`),

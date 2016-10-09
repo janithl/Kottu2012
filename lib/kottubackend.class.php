@@ -216,6 +216,14 @@ class KottuBackend
 			
 			$this->dbh->commit();
 		}
+
+		/** update trend for posts from last 12 hours */
+		$this->dbh->query("UPDATE posts  "
+		."INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c "
+		."ON (posts.postID = c.pid) "
+		."SET trend = (c.clicks - 1) / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
+		."WHERE serverTimestamp > :halfday", 
+		array(':gravity' => 1.5, ':halfday' => $this->now - 43200));
 	}
 	
 	/*
