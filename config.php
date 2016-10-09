@@ -38,6 +38,9 @@ $config['fbappkey']	= 'key';
 $config['twweight']	= 0;
 $config['fbweight'] = 0.3;
 $config['clweight'] = 0.7;
+
+/** gravity for trend */
+$config['gravity']  = 1.6;
 	
 function config($key) {
 	global $config;

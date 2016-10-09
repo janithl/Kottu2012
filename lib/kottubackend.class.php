@@ -225,7 +225,7 @@ class KottuBackend
 		."INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c "
 		."ON (posts.postID = c.pid) "
 		."SET trend = (c.clicks - 1) / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
-		."WHERE serverTimestamp > :day", array(':gravity' => 1.2, ':day' => $day));
+		."WHERE serverTimestamp > :day", array(':gravity' => config('gravity'), ':day' => $day));
 	}
 	
 	/*
