@@ -233,8 +233,8 @@ else {
 								$path[$i + 3] : 0;
 		$out->lang	= $path[$i];
 		$out->posts = $k->search('', $out->page, $path[$i], $path[$i + 2]);
-		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-		$out->trending	= $k->trendingtopics();
+		$out->hotposts	= $k->fetchallposts('all', 'today', 0, 5);
+		$out->trending	= $k->fetchallposts('all', 'trending', 0, 5);
 		$out->toplink	= "tags/{$path[$i + 2]}/";
 		$out->currentpage	= $out->lang . '/' . $out->toplink;
 		
@@ -255,8 +255,8 @@ else {
 							$path[$i + 3] : 0;
 								
 			$out->posts 	= $k->fetchtopicposts($path[$i + 2], $out->page);
-			$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-			$out->trending	= $k->trendingtopics();
+			$out->hotposts	= $k->fetchallposts('all', 'today', 0, 5);
+			$out->trending	= $k->fetchallposts('all', 'trending', 0, 5);
 			$out->toplink	= "topic/{$path[$i + 2]}/";
 			$out->currentpage = $out->lang . '/' . $out->toplink;
 			
@@ -316,8 +316,8 @@ else {
 		$out->posts = $k->fetchblogposts($path[$i + 1], $out->page, $out->pop == 'off');
 
 		$out->numblogs	= $k->fetchnumblogs();
-		$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-		$out->trending	= $k->trendingtopics();
+		$out->hotposts	= $k->fetchallposts('all', 'today', 0, 5);
+		$out->trending	= $k->fetchallposts('all', 'trending', 0, 5);
 		$out->currentpage = "blog/{$out->bid}/{$out->pop}/";
 
 		$out->render('web/head.php');
@@ -349,6 +349,7 @@ else {
 				
 					case '':
 					case 'off':
+					case 'trending':
 					case 'today':
 					case 'week':
 					case 'month':
@@ -375,8 +376,8 @@ else {
 				$out->toplink	= $out->time;
 				$out->numblogs	= $k->fetchnumblogs();
 				$out->posts		= $k->fetchallposts($out->lang, $out->time, $out->page);
-				$out->hotposts	= array_slice($k->fetchallposts('all', 'today'), 0, 5);
-				$out->trending	= $k->trendingtopics();
+				$out->hotposts	= $k->fetchallposts('all', 'today', 0, 5);
+				$out->trending	= $k->fetchallposts('all', 'trending', 0, 5);
 				$out->currentpage = "{$out->lang}/{$out->time}/";
 				$out->mainpage	= true;
 
@@ -413,10 +414,11 @@ function titlemaker($lang='all', $time='off', $page=1) {
 				'si'	=> ' Sinhala',
 				'ta'	=> ' Tamil');
 
-	$t = array(	'off'	=> '',
-				'today'	=> ' Today',
-				'week'	=> ' This Week',
-				'month'	=> ' This Month');
+	$t = array(	'off'		=> '',
+				'trending'	=> ' Trending Today',
+				'today'		=> ' Today',
+				'week'		=> ' This Week',
+				'month'		=> ' This Month');
 
 	$title = ($time == 'off') ? "Latest" : "Hot";
 	$title .= "{$l[$lang]} Posts{$t[$time]}";

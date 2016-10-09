@@ -9,20 +9,23 @@
 <?php endforeach; ?>
 		</div>
 		<div class="panel-footer text-center">
-			<a class="btn btn-success" title="View posts listed by popularity" 
+			<a class="btn btn-success" title="View posts listed by social media popularity" 
 				href="<?php echo config('basepath') . '/' . $this->lang . '/today/';?>">See More →</a>
 		</div>
 	</div>
 	
 	<div class="panel panel-default">
-		<div class="panel-heading"><h3 class="panel-title">Trending Topics <small>Today</small></h3></div>
+		<div class="panel-heading"><h3 class="panel-title">Trending On Kottu <small>Today</small></h3></div>
 		<div class="list-group">
-<?php foreach($this->trending as $t): ?>
-			<a href="<?php echo config('basepath') . '/all/topic/' . $t['tid'] ?>" class="list-group-item">
-				<span class="badge"><?php echo $t['docs']; ?></span>
-				<?php echo $t['term']; ?>
+<?php foreach($this->trending as $p): ?>
+			<a class="list-group-item" target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $p['id'] . '&url=' . $p['link']; ?>">
+				<?php echo $p['title']; ?>
 			</a>
 <?php endforeach; ?>
+		</div>
+		<div class="panel-footer text-center">
+			<a class="btn btn-success" title="View posts listed by Kottu most clicked trend" 
+				href="<?php echo config('basepath') . '/' . $this->lang . '/trending/';?>">See More →</a>
 		</div>
 	</div>
 	

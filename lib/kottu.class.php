@@ -23,10 +23,10 @@ class Kottu
 	/*
 		returns all the posts that fit the criteria given
 	*/
-	public function fetchallposts($lang='all', $time='off', $pageno=0) {
+	public function fetchallposts($lang='all', $time='off', $pageno=0, $chunk=20) {
 	
 		$lang = ($lang === 'all') ? '%' : $lang;
-		$page = ((int) $pageno) * 20;
+		$page = ((int) $pageno) * $chunk;
 		
 		$posts = array();
 		
@@ -37,24 +37,33 @@ class Kottu
 				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
 				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
 				."p.blogID AND p.language LIKE :lang ORDER BY "
-				."p.serverTimestamp DESC LIMIT :page, 20", 
-				array(':lang' => $lang, ':page' => $page));
+				."p.serverTimestamp DESC LIMIT :page, :chunk", 
+				array(':lang' => $lang, ':page' => $page, ':chunk' => $chunk));
 		}
 		else {
 		
 			$day = 0;
 
-			if($time == 'today')	{ $day = $this->now - (24 * 60 * 60); }
-			elseif($time == 'week')	{ $day = $this->now - (7 * 24 * 60 * 60); }
-			elseif($time == 'month'){ $day = $this->now - (30 * 24 * 60 * 60); }
+			if($time == 'today' || $time === 'trending') { 
+				$day = $this->now - (24 * 60 * 60); 
+			}
+			elseif($time == 'week')	{ 
+				$day = $this->now - (7 * 24 * 60 * 60); 
+			}
+			elseif($time == 'month') { 
+				$day = $this->now - (30 * 24 * 60 * 60); 
+			}
+
+			$order = ($time === 'trending') ? 'trend' : 'postBuzz';
 
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
 				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
 				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
 				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
 				."p.blogID AND p.language LIKE :lang AND serverTimestamp > "
-				.":time ORDER BY postBuzz DESC LIMIT :page, 20", 
-				array(':lang' => $lang, ':time' => $day, ':page' => $page));
+				.":time ORDER BY $order DESC LIMIT :page, :chunk", 
+				array(':lang' => $lang, ':time' => $day, ':page' => $page, 
+				':chunk' => $chunk));
 
 		}
 

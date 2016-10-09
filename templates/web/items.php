@@ -30,11 +30,14 @@
 	</article>
 <?php endif; ?>
 
-<?php if($this->time == 'today' || $this->time == 'week' || $this->time == 'month' || $this->time == 'all'): ?>
+<?php if(in_array($this->time, array('trending', 'today', 'week', 'month', 'all'))): ?>
 	<article class="panel panel-default"><!-- popular post timescale selector -->
 		<div class="panel-body">
 			<ul class="nav nav-pills">
   				<li role="presentation" class="disabled"><a>Hot Posts: </a></li>
+  				<li role="presentation" <?php echo ($this->time == 'trending') ? 'class="active"' : ''?>>
+					<a href="<?php echo config('basepath') . '/' . $this->lang . '/trending/'; ?>">Trending</a>
+				</li>
 				<li role="presentation" <?php echo ($this->time == 'today') ? 'class="active"' : ''?>>
 					<a href="<?php echo config('basepath') . '/' . $this->lang . '/today/'; ?>">Today</a>
 				</li>
