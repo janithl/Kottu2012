@@ -217,13 +217,15 @@ class KottuBackend
 			$this->dbh->commit();
 		}
 
-		/** update trend for posts from last 12 hours */
+		/** 
+			update trend for posts from last 24 hours 
+			from HN algorithm: https://news.ycombinator.com/item?id=1781013
+		*/
 		$this->dbh->query("UPDATE posts  "
 		."INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c "
 		."ON (posts.postID = c.pid) "
 		."SET trend = (c.clicks - 1) / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
-		."WHERE serverTimestamp > :halfday", 
-		array(':gravity' => 1.5, ':halfday' => $this->now - 43200));
+		."WHERE serverTimestamp > :day", array(':gravity' => 1.2, ':day' => $day));
 	}
 	
 	/*
