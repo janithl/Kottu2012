@@ -16,9 +16,9 @@ http://www.opensource.org/licenses/gpl-3.0.html
 
 body {
 	background: #DDD url('../../img/bgstatic.png') repeat;
-	font-family: "Droid Sans", Tahoma, Arial, sans-serif;
-	font-size: 10pt;
-	line-height: 1.6;
+	font-family: 'Abhaya Libre', Georgia, serif;
+	font-size: 11pt;
+	line-height: 1.5;
 	color: #333;
 	padding-top: 70px;
 }
