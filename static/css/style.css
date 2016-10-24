@@ -31,6 +31,10 @@ a:hover {
 	color: #EA3556;
 }
 
+h1, h2, h3, .h1, .h2, .h3 {
+	margin: 10px 0;
+}
+
 .panel-default {
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 	border: 0;
