@@ -420,7 +420,10 @@ function titlemaker($lang='all', $time='off', $page=1) {
 				'week'		=> ' This Week',
 				'month'		=> ' This Month');
 
-	$title = ($time == 'off') ? "Latest" : "Hot";
+	$title = '';
+	if($time != 'trending') {
+		$title = ($time == 'off') ? "Latest" : "Hot";
+	}
 	$title .= "{$l[$lang]} Posts{$t[$time]}";
 	$title .= ($page > 1) ? " (page $page)" : '';
 	
