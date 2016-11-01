@@ -31,17 +31,15 @@ class Kottu
 		$posts = array();
 		
 		if($time === 'off') {
-			
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
 				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
-				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount, p.trend "
 				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
 				."p.blogID AND p.language LIKE :lang ORDER BY "
 				."p.serverTimestamp DESC LIMIT :page, :chunk", 
 				array(':lang' => $lang, ':page' => $page, ':chunk' => $chunk));
 		}
 		else {
-		
 			$day = 0;
 
 			if($time == 'today' || $time === 'trending') { 
@@ -58,19 +56,16 @@ class Kottu
 
 			$resultset = $this->dbh->query("SELECT p.postID, p.title, "
 				."p.link, p.serverTimestamp, p.postBuzz, b.blogName, b.bid, "
-				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount "
+				."p.thumbnail, p.postContent, p.fbCount, p.tweetCount, p.trend "
 				."FROM posts AS p, blogs AS b WHERE b.active = 1 AND b.bid = "
 				."p.blogID AND p.language LIKE :lang AND serverTimestamp > "
 				.":time ORDER BY $order DESC LIMIT :page, :chunk", 
 				array(':lang' => $lang, ':time' => $day, ':page' => $page, 
 				':chunk' => $chunk));
-
 		}
 
 		if($resultset) {
-		
 			while(($row = $resultset->fetch()) != false) {
-			
 				$p['id']	= $row[0];
 				$p['title'] = strip_tags($row[1]);
 				$p['link']	= $row[2];
@@ -85,6 +80,7 @@ class Kottu
 				$p['cont']	= strip_tags($row[8]);
 				$p['fb']	= $row[9];
 				$p['tw']	= $row[10];
+				$p['trend']	= $row[11];
 				
 				$posts[] 	= $p;
 			}
