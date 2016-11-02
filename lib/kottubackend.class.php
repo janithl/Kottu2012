@@ -224,7 +224,7 @@ class KottuBackend
 		$this->dbh->query("UPDATE posts  "
 		."INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c "
 		."ON (posts.postID = c.pid) "
-		."SET trend = (c.clicks - 1) / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
+		."SET trend = c.clicks / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
 		."WHERE serverTimestamp > :day", array(':gravity' => config('gravity'), ':day' => $day));
 	}
 	
