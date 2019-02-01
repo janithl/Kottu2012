@@ -9,10 +9,10 @@
 global $config;
 
 /* DB settings */
-$config['dbhost']	= 'localhost';
+$config['dbhost']	= 'db';
 $config['dbname']	= 'kottu';
 $config['dbuser']	= 'root';
-$config['dbpwd']	= '';
+$config['dbpwd']	= 'your_mysql_root_password';
 
 /* Index of first argument */
 $config['argstart']	= 1;
