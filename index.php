@@ -1,6 +1,7 @@
 <?php
 
 require('./config.php');
+date_default_timezone_set('Asia/Colombo');
 
 /*
 	Index.php, where all good things happen :D

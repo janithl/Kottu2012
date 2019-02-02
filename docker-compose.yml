@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  web:
+  webserver:
     image: nginx:alpine
     ports:
       - "8000:80"
@@ -24,7 +24,7 @@ services:
     networks:
       - internal
   php:
-    image: php:fpm
+    image: php:5.6-fpm
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile

@@ -1,0 +1,7 @@
+.gitignore
+.htaccess
+kottu.sql
+LICENSE
+README.md
+docker*
+webcache/*
