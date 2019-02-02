@@ -8,6 +8,53 @@ which gets rid of ugly URLs, loads of bugs and large spaghetti code files :P
 
 
 
+Installation
+------------
+
+We've moved installation to Docker to make it easier to set up Kottu on either
+your local machine or on a server. You need to have `docker` and `docker-compose`
+installed for this.
+
+1. Simply clone the repository and run `docker-compose up -d` inside it. This will
+set up three Docker containers, and the output of `docker ps` should look similar
+to the following:
+
+```
+CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS              PORTS                               NAMES
+3836dc148c6a        php:5.6-fpm                           "docker-php-entrypoi…"   5 hours ago         Up 5 hours          9000/tcp                            kottu2012_php_1
+e833ce2641e6        mysql:5.7                             "docker-entrypoint.s…"   6 hours ago         Up 6 hours          0.0.0.0:3306->3306/tcp, 33060/tcp   kottu2012_db_1
+652ee5c63ac2        nginx:alpine                          "nginx -g 'daemon of…"   6 hours ago         Up 6 hours          0.0.0.0:8000->80/tcp                kottu2012_webserver_1
+```
+
+2. After setting these containers up, you will need to do the initial DB migration
+using the `kottu.sql` script. For this, we will run the script against the mysql
+client installed on the PHP container:
+
+`docker-compose exec php mysql -h db -u root -pyour_mysql_root_password kottu < kottu.sql`
+
+3. Now, if you go to `http://localhost:8000`, this should show you an empty Kottu screen.
+
+4. You can log in to the admin panel at `http://localhost:8000/admin` using the default 
+username `indi` and password `indi`. 
+
+**Important!** Please change these values in the `users` table to ensure 
+security.
+
+5. You can add new blogs using the interface there.
+
+6. When you want to fetch the posts belonging to those blogs, you need to navigate to
+`http://localhost:8000/admin/feedget/<secretkey>`, where the secret key can be found 
+inside the config.php file. It is `backendsecretkeywithunicorns` by default.
+
+7. If you go back to `http://localhost:8000`, you should see the posts having been 
+populated. If the screen is stuck at empty, that is probably due to caching. Manually 
+clear the cache by navigating to `http://localhost:8000/admin/clearcache/<secretkey>`.
+
+8. To get Facebook share/like information for posts in order to calculate "spice", you
+will need to create a Facebook app and copy the app ID and secret into `config.php`.
+
+
+
 License
 -------
 
@@ -89,24 +136,6 @@ stuff is handled inside that.
 
 * `./config.php` contains all the configuration details for Kottu.
 
-
-
-How to set up Kottu 2012
-------------------------
-
-* Run `kottu2012.sql` in a mySQL server.
- 
-* Copy the files into the server's webroot, and set up all the values in
-`config.php` correctly.
-
-* Create a Facebook app (to get Facebook share/like information for posts) and 
-copy the app ID and secret into `config.php`
-
-* You can log in to the admin panel at http://basepath/admin using the default 
-username `indi` and password `indi`. 
-
-**Important!** Please change these values in the `users` table to ensure 
-security.
 
 
 cronjobs
