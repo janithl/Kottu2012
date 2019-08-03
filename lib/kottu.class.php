@@ -373,7 +373,7 @@ class Kottu
 	*/
 	public function fetchurl($id) {
 		$resultset = $this->dbh->query("SELECT link FROM posts "
-		."WHERE id = :id", array(':id' => $id));
+		."WHERE postId = :id", array(':id' => $id));
 		
 		if($resultset && ($row = $resultset->fetch()) != false) {
 			return $row[0];
