@@ -55,15 +55,15 @@ else {
 
 		/* The artist formerly known as go.php */
 
-		if(isset($_GET['url'])) {
-
+		if(isset($_GET['id'])) {
 			$k->insertclick($_SERVER['REMOTE_ADDR'], $_GET['id']);
-			header("location: " . $_GET['url']);
+			if($url = $k->fetchurl($_GET['id'])) {
+				header("location: " . $url);
+				return;
+			}
 		}
-		else {
 
-			header('location: ' . config('basepath'));
-		}
+		header('location: ' . config('basepath'));
 	}
 	elseif($path[$i] == 'admin') {
 		$allowed_paths = array('cacheclear', 'feedget', 'termdiscovery', 'calculatespice');

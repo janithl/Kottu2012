@@ -1,6 +1,6 @@
 <article class="panel panel-default">
     <div class="panel-body">
-        <h3><a  target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $i['id'] . '&url=' . $i['link']; ?>" 
+        <h3><a  target="_blank" href="<?php echo config('basepath') . '/go/?id=' . $i['id']; ?>" 
         id="<?php echo $i['id']; ?>"><?php echo $i['title']; ?></a></h3>
         <a href="<?php echo config('basepath') . '/blog/' . $i['bid']; ?>"><?php echo $i['blog']; ?></a>
     

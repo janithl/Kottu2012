@@ -367,6 +367,20 @@ class Kottu
 			."VALUES(:pid, :ip, :ts, :hs)", array(':pid' => $pid, ':ip' => $ip, 
 			':ts' => $this->now, ':hs' => (int)($this->now / 3600)));
 	}
+
+	/*
+		Get post URL
+	*/
+	public function fetchurl($id) {
+		$resultset = $this->dbh->query("SELECT link FROM posts "
+		."WHERE id = :id", array(':id' => $id));
+		
+		if($resultset && ($row = $resultset->fetch()) != false) {
+			return $row[0];
+		}
+		
+		return false;
+	}
 	
 	/*
 		returns all the posts for a particular blogID
