@@ -70,18 +70,18 @@ class KottuBackend
 	}
 	
 	/*
-		Getting Facebook like/share count: Use FQL to get the fb count
+		Getting Facebook "engagement" count using Graph API
 	*/
 	public function getfbcount($url) {
 		$fcount = 0;
 
-		$urlstr	= "https://graph.facebook.com/v2.7/?id=" . urlencode($url) . 
-			"&access_token=" . config('fbappid') . "|" .  config('fbappkey');
+		$urlstr	= "https://graph.facebook.com/v4.0/?fields=og_object{engagement}&id=" .
+			urlencode($url) . "&access_token=" . config('fbappid') . "|" .  config('fbappkey');
 		
 		$json 	= @file_get_contents($urlstr);
 		if($json) {
 			$fb 	= json_decode($json, true);
-			$fcount = $fb['share']['share_count'];
+			$fcount = $fb['og_object']['engagement']['count'];
 		}
 
 		return $fcount;
@@ -327,20 +327,26 @@ class KottuBackend
 		$postadded = false;
 		
 		/*
-			we get 50 blogs - 30 that have updated in the last two weeks and 
-		 	20 that have not - sorted on least recently accessed
+			we get 50 blogs - 30 that have updated in the last four weeks and
+			20 that have not - sorted on least recently accessed
+			(also add in 5 more, just)
 		 */
-		$resultset = $this->dbh->query("(SELECT bid, blogRSS FROM blogs AS b, "
-						."posts as p WHERE b.active = 1 AND p.blogid = b.bid "
-						."GROUP BY blogid HAVING MAX(serverTimestamp) > :twk1 "
-						."ORDER BY access_ts ASC LIMIT 20) UNION (SELECT bid, "
-						."blogRSS FROM blogs AS b, posts as p WHERE "
-						."p.blogid = b.bid GROUP BY blogid HAVING "
-						."MAX(serverTimestamp) <= :twk2 ORDER BY access_ts ASC "
-						."LIMIT 30) UNION (SELECT bid, blogRSS FROM blogs "
-						."WHERE active = 1 ORDER BY access_ts ASC LIMIT 1)", 
-						array(':twk1' => $this->now - 2419200,
-						':twk2' => $this->now - 2419200));
+		$fourWeeks = 2419200;
+		$resultset = $this->dbh->query("
+			(SELECT bid, blogRSS
+				FROM blogs AS b JOIN posts as p ON (p.blogid = b.bid)
+				WHERE b.active = 1 GROUP BY blogid
+				HAVING MAX(serverTimestamp) > :twk1
+				ORDER BY access_ts ASC LIMIT 20) UNION
+			(SELECT bid, blogRSS
+				FROM blogs AS b JOIN posts as p ON (p.blogid = b.bid)
+				WHERE b.active = 1 GROUP BY blogid
+				HAVING MAX(serverTimestamp) <= :twk2
+				ORDER BY access_ts ASC LIMIT 30) UNION
+			(SELECT bid, blogRSS FROM blogs
+				WHERE active = 1 ORDER BY access_ts ASC LIMIT 5)",
+					array(':twk1' => $this->now - $fourWeeks,
+						':twk2' => $this->now - $fourWeeks));
 
 		if($resultset)	{
 		
