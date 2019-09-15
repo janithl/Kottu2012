@@ -144,8 +144,8 @@ cronjobs
 For our setup at http://kottu.org, we use the following setup. Your needs may
 vary.
 
-* `http://basepath/admin/clearcache/secretkey` should run every hour or so.
+* `http://<basepath>/admin/clearcache/<secretkey>` should run every hour or so.
 
-* `http://basepath/admin/spicecalc/secretkey` should run every 15 minutes or so.
+* `http://<basepath>/admin/spicecalc/<secretkey>` should run every 15 minutes or so.
 
-* `http://basepath/admin/feedget/secretkey` should run every 5 minutes or so.
+* `http://<basepath>/admin/feedget/<secretkey>` should run every 5 minutes or so.
