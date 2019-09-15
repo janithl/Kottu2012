@@ -48,6 +48,7 @@ else {
 	$out	= new Template();
 	$out->toplink		= 'off';
 	$out->currentpage	= 'all/off/';
+	$out->mainpage		= false;
 	
 	$janithstart = microtime(true);
 

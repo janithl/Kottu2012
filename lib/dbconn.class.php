@@ -29,6 +29,7 @@ class DBConn
 			$this->db = new PDO($dsn, config('dbuser'), config('dbpwd'));
 			$this->db->exec("set names utf8");
 			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} 
 		catch (PDOException $e) {
 			die("Database connection failed: {$e->getMessage()} <br/>");
@@ -39,13 +40,12 @@ class DBConn
 	public function commit()	{ $this->db->commit(); }
 
 	public function query($sql, $params = array()) {		
-		
-		$statement = $this->db->prepare($sql);
-		if($statement) {
+		try {
+			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($params);
 			return $result ? $statement : $result;
-		} else {
-			die("Preparing statement failed: {$sql} <br/>");
+		} catch (PDOException $e) {
+			die("Database exception thrown: {$e->getMessage()} <br/>");
 		}
 	}
 }
