@@ -141,11 +141,11 @@ stuff is handled inside that.
 cronjobs
 --------
 
-For our setup at http://kottu.org, we use the following setup. Your needs may
+For our setup at https://kottu.org, we use the following setup. Your needs may
 vary.
 
-* `http://<basepath>/admin/cacheclear/<secretkey>` should run every hour or so.
+* `https://<basepath>/admin/cacheclear/<secretkey>` should run every hour or so.
 
-* `http://<basepath>/admin/calculatespice/<secretkey>` should run every 15 minutes or so.
+* `https://<basepath>/admin/calculatespice/<secretkey>` should run every 15 minutes or so.
 
-* `http://<basepath>/admin/feedget/<secretkey>` should run every 5 minutes or so.
+* `https://<basepath>/admin/feedget/<secretkey>` should run every 5 minutes or so.

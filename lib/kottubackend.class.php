@@ -300,7 +300,7 @@ class KottuBackend
 		}
 
 		/* insert the post into database */
-		$this->dbh->query("INSERT INTO posts(postID, blogID, link, title, "
+		$this->dbh->query("INSERT IGNORE posts(postID, blogID, link, title, "
 			."postContent, serverTimestamp, thumbnail, language, tags) VALUES "
 			."(NULL, :bid, :link, :title, :content, :ts, :thumb, :lang, :tags)",
 			array(	':bid'		=> $post['bid'],

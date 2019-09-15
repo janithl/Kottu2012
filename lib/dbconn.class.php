@@ -32,6 +32,7 @@ class DBConn
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} 
 		catch (PDOException $e) {
+			error_log("Database connection failed: {$e->getMessage()}");
 			die("Database connection failed: {$e->getMessage()} <br/>");
 		}
 	}
@@ -45,6 +46,7 @@ class DBConn
 			$result = $statement->execute($params);
 			return $result ? $statement : $result;
 		} catch (PDOException $e) {
+			error_log("Database exception thrown: {$e->getMessage()}");
 			die("Database exception thrown: {$e->getMessage()} <br/>");
 		}
 	}
