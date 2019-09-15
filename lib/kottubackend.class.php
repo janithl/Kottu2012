@@ -81,7 +81,7 @@ class KottuBackend
 		$json 	= @file_get_contents($urlstr);
 		if($json) {
 			$fb 	= json_decode($json, true);
-			$fcount = $fb['og_object']['engagement']['count'];
+			$fcount = intval($fb['og_object']['engagement']['count']);
 		}
 
 		return $fcount;
