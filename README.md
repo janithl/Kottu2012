@@ -15,6 +15,9 @@ We've moved installation to Docker to make it easier to set up Kottu on either
 your local machine or on a server. You need to have `docker` and `docker-compose`
 installed for this.
 
+0. First, copy the `config.php.example` file to `config.php` and fill it with the
+correct values for your app.
+
 1. Simply clone the repository and run `docker-compose up -d` inside it. This will
 set up three Docker containers, and the output of `docker ps` should look similar
 to the following:
