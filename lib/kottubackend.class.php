@@ -75,13 +75,15 @@ class KottuBackend
 	public function getfbcount($url) {
 		$fcount = 0;
 
-		$urlstr	= "https://graph.facebook.com/v4.0/?fields=og_object{engagement}&id=" .
+		$url = "https://graph.facebook.com/v4.0/?fields=og_object{engagement}&id=" .
 			urlencode($url) . "&access_token=" . config('fbappid') . "|" .  config('fbappkey');
-		
-		$json 	= @file_get_contents($urlstr);
+
+		$json = @file_get_contents($url);
 		if($json) {
-			$fb 	= json_decode($json, true);
-			$fcount = intval($fb['og_object']['engagement']['count']);
+			$fb = json_decode($json, true);
+			if(array_key_exists('og_object', $fb)) {
+				$fcount = intval($fb['og_object']['engagement']['count']);
+			}
 		}
 
 		return $fcount;
@@ -159,25 +161,25 @@ class KottuBackend
 			continously feeds us the least recently polled posts
 		*/
 		$this->dbh->begin();
-					
-		$resultset = $this->dbh->query("(SELECT postID, link FROM posts AS p, "
-		."blogs AS b WHERE b.bid = p.blogid AND b.active = 1 AND "
-		."serverTimestamp > :day ORDER BY api_ts LIMIT 15) UNION "
-		."(SELECT postID, link FROM posts AS p, blogs AS b WHERE "
-		."b.bid = p.blogid AND b.active = 1 AND api_ts = 0 LIMIT 3)", 
-		array(':day' => $day));
-		
+
+		$resultset = $this->dbh->query("
+			(SELECT postID, link
+				FROM posts AS p JOIN blogs AS b ON (b.bid = p.blogid)
+				WHERE b.active = 1 AND serverTimestamp > :day
+				ORDER BY api_ts LIMIT 15) UNION
+			(SELECT postID, link
+				FROM posts AS p JOIN blogs AS b ON (b.bid = p.blogid)
+				WHERE b.active = 1 AND api_ts = 0 LIMIT 3)", array(':day' => $day));
+
 		if($resultset) {
-		
-			while(($row = $resultset->fetch()) != false) {
-			
+			while(($row = $resultset->fetch()) !== false) {
 				$postid = $row[0];
 				$url 	= $row[1];
 
 				$tw = $this->gettweetcount($url);
 				$fb = $this->getfbcount($url);
 				$cl = $this->getclicks($postid);
-				
+
 				/*
 					If any of the new tweet/fb counts are bigger than the max,
 					we have to update the "max"
@@ -185,65 +187,60 @@ class KottuBackend
 				if($this->stats['maxtweets'] < $tw) {
 					$this->stats['maxtweets'] = $tw;
 				}
-				
+
 				if($this->stats['maxfbooks'] < $fb) {
 					$this->stats['maxfbooks'] = $fb;
 				}
-				
+
 				$poststats[$postid] = array($tw, $fb, $cl);
 			}
-			
+
 			/*
 				now we do the calculations post by post and write the stats
 				back into the database
 			*/
-			
 			foreach($poststats as $id => $stats) {
-			
 				$twbuzz = $this->unskew($stats[0] / ($this->stats['maxtweets'] + 1));
 				$fbbuzz = $this->unskew($stats[1] / ($this->stats['maxfbooks'] + 1));
 				$clbuzz = $this->unskew($stats[2] / ($this->stats['totclicks'] + 1));
-				
+
 				/* final spice calculation */
 				$spice = ($twbuzz * config('twweight')) + ($fbbuzz * 
 						config('fbweight')) + ($clbuzz * config('clweight'));
-					
+
 				/* update stats */	
 				$this->updatestats($id, $spice, $stats[0], $stats[1]);
 				printf("Spice for post %d: %5.3f (%3d t, %3d f)\n", $id, 
 					$spice, $stats[0], $stats[1]);
 			}
-			
+
 			$this->dbh->commit();
 		}
 
-		/** 
+		/*
 			update trend for posts from last 24 hours 
 			from HN algorithm: https://news.ycombinator.com/item?id=1781013
 		*/
-		$this->dbh->query("UPDATE posts  "
-		."INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c "
-		."ON (posts.postID = c.pid) "
-		."SET trend = c.clicks / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)"
-		."WHERE serverTimestamp > :day", array(':gravity' => config('gravity'), ':day' => $day));
+		$this->dbh->query("UPDATE posts 
+			INNER JOIN (SELECT pid, COUNT(ip) AS clicks FROM clicks GROUP BY pid) c ON (posts.postID = c.pid)
+			SET trend = c.clicks / POWER((UNIX_TIMESTAMP() - serverTimestamp) / 3600, :gravity)
+			WHERE serverTimestamp > :day", array(':gravity' => config('gravity'), ':day' => $day));
 	}
-	
+
 	/*
 		Check if a post isn't in database
 	*/
 	public function postnotindb($url) {
-	
 		$res = $this->dbh->query("SELECT * FROM posts WHERE link LIKE :url", 
 						array(':url' => $url));
 		
 		return (!$res || $res->fetch() == false);
 	}
-	
+
 	/*
 		generate the thumbnail
 	*/
 	public function generatethumbnail($postcontent) {
-	
 		/*	finding images in the post content	*/
 		$html		= str_get_html($postcontent);
 		$imglink	= null;
@@ -260,12 +257,11 @@ class KottuBackend
 
 		return $imglink;
 	}
-	
+
 	/*
 		Add post to database
 	*/
 	public function addnewpost($post) {
-		
 		/* if a post doesn't have a title, give it one */
 		if(strlen($post['title']) < 1) { $post['title'] = "Untitled Post"; }
 
@@ -313,7 +309,7 @@ class KottuBackend
 					':tags'		=> $post['tags']));
 	
 	}
-	
+
 	/*
 		Feedget - poll feeds and add new posts
 	*/

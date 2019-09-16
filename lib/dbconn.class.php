@@ -47,7 +47,6 @@ class DBConn
 			return $result ? $statement : $result;
 		} catch (PDOException $e) {
 			error_log("Database exception thrown: {$e->getMessage()}");
-			die("Database exception thrown: {$e->getMessage()} <br/>");
 		}
 	}
 }
