@@ -15,7 +15,7 @@
 				href="<?= config('basepath') . '/' . $this->lang . '/trending/';?>">See More →</a>
 		</div>
 	</div>
-	
+
 	<div class="panel panel-default">
 		<div class="panel-heading"><h3 class="panel-title">Hot Posts <small>Today</small></h3></div>
 		<div class="list-group">
@@ -30,14 +30,6 @@
 		<div class="panel-footer text-center">
 			<a class="btn btn-success" title="View posts listed by social media popularity" 
 				href="<?= config('basepath') . '/' . $this->lang . '/today/';?>">See More →</a>
-		</div>
-	</div>
-	
-	<div class="panel panel-default">
-		<div class="panel-heading"><h3 class="panel-title">Sri Lanka on Flickr</h3></div>
-		<div class="panel-body text-center">
-		<script type="text/javascript" 
-	src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=m&layout=x&source=all_tag&tag=lanka%2C+srilanka"></script>
 		</div>
 	</div>
 
