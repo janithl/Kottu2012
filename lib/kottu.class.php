@@ -431,8 +431,9 @@ class Kottu
 		$blog	= array();
 		
 		$resultset = $this->dbh->query("SELECT blogName, blogURL, "
-		."COUNT(postID), AVG(postBuzz), MAX(serverTimestamp) FROM blogs AS b, "
-		."posts AS p WHERE b.active = 1 AND b.bid = p.blogID AND b.bid = :id", 
+		."COUNT(postID), AVG(postBuzz), MAX(serverTimestamp) "
+		."FROM blogs AS b JOIN posts AS p ON (b.bid = p.blogID) "
+		."WHERE b.active = 1 AND b.bid = :id GROUP BY b.bid",
 		array(':id'=>$blogid));
 		
 		if($resultset && (($row = $resultset->fetch()) != false)) {
@@ -441,7 +442,7 @@ class Kottu
 			$blog['url']	= $row[1];
 			$blog['count']	= $row[2];
 			$blog['buzz']	= $this->chilies($row[3]);
-			$blog['ts']		= $this->humants($row[4]);
+			$blog['ts']	= $this->humants($row[4]);
 		}
 		
 		return $blog;
